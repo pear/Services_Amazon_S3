@@ -1,0 +1,9 @@
+<?php
+
+// Amazon Web Services Access Key ID (20-character alphanumeric string)
+define('ACCESS_KEY_ID',     '');
+
+// Amazon Web Services Secret Access Key (40-character string)
+define('SECRET_ACCESS_KEY', '');
+
+?>

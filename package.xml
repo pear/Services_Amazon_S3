@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0"
+    xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+                        http://pear.php.net/dtd/tasks-1.0.xsd
+                        http://pear.php.net/dtd/package-2.0
+                        http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Services_Amazon_S3</name>
+ <channel>pear.php.net</channel>
+ <summary>PHP interface to Amazon S3's API</summary>
+ <description>Services_Amazon_S3 is a PHP library for accessing Amazon Simple Storage Service (S3). The library is based on the 2006-03-01 REST API.
+
+Features:
+ * list, create and delete buckets, including buckets with location constraints (European buckets)
+ * create, read and delete objects including metadata
+ * list keys in a bucket using an SPL Iterator with support for paging, key prefixes and delimiters
+ * manipulate access control lists for buckets and objects
+ * specify the request style (virtualhost, cname, path style) and endpoint
+ * get signed URLs to allow a trusted third party to access private files
+ * access buckets and objects using PHP filesystem functions through a stream wrapper</description>
+ <lead>
+  <name>Christian Schmidt</name>
+  <user>schmidt</user>
+  <email>chsc@peytz.dk</email>
+  <active>yes</active>
+ </lead>
+ <date>2008-04-07</date>
+ <version>
+  <release>0.1.0</release>
+  <api>0.1.0</api>
+ </version>
+ <stability>
+  <release>alpha</release>
+  <api>alpha</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
+ <notes>First alpha release.</notes>
+ <contents>
+  <dir name="/" baseinstalldir="Services/Amazon">
+   <file name="S3.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info"/>
+   </file>
+   <dir name="S3">
+    <file name="AccessControlList.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <file name="AccessDeniedException.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <file name="Exception.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <file name="NotFoundException.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <file name="ObjectIterator.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <file name="Prefix.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <file name="Resource.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <file name="ServerErrorException.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <file name="Stream.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info"/>
+    </file>
+    <dir name="Resource">
+     <file name="Object.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info"/>
+     </file>
+     <file name="Bucket.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info"/>
+     </file>
+    </dir>
+   </dir>
+   <dir name="tests">
+    <file name="AllTests.php" role="test"/>
+    <file name="config.php.dist" role="test"/>
+    <file name="Test.php" role="test"/>
+   </dir>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.1.1</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0a7</min>
+   </pearinstaller>
+   <package>
+    <name>Crypt_HMAC</name>
+    <channel>pear.php.net</channel>
+   </package>
+   <package>
+    <name>HTTP_Request</name>
+    <channel>pear.php.net</channel>
+    <min>1.4.0</min>
+   </package>
+   <extension>
+    <name>SPL</name>
+   </extension>
+  </required>
+ </dependencies>
+ <phprelease/>
+</package>
