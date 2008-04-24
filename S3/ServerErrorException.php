@@ -59,5 +59,8 @@ require_once 'Services/Amazon/S3/Exception.php';
  * @version   Release:  @package_version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */ 
+class Services_Amazon_S3_ServerErrorException extends Services_Amazon_S3_Exception
+{
+}
 
 ?>
