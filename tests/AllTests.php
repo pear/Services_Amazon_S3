@@ -3,13 +3,15 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Services_Amazon_S3_AllTests::main');
 }
 
-// PHPUnit inlcudes
 require_once 'PHPUnit/Framework/TestSuite.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
 
 require_once dirname(__FILE__) . '/Test.php';
 
-include_once dirname(__FILE__) . '/config.php';
+$configFile = dirname(__FILE__) . '/config.php';
+if (file_exists($configFile)) {
+    include_once $configFile;
+}
 
 class Services_Amazon_S3_AllTests extends PHPUnit_Framework_TestSuite
 {

@@ -9,7 +9,10 @@ require_once "PHPUnit/Framework/TestSuite.php";
 
 require_once 'Services/Amazon/S3.php';
 
-include_once dirname(__FILE__) . '/config.php';
+$configFile = dirname(__FILE__) . '/config.php';
+if (file_exists($configFile)) {
+    include_once $configFile;
+}
 
 /**
  * Test class for Services_Amazon_S3.
