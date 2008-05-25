@@ -78,7 +78,7 @@ require_once 'Services/Amazon/S3.php';
  * <li>use_ssl           bool   maps to $s3->useSSL</li>
  * <li>request_style     string maps to $s3->useSSL</li>
  * <li>endpoint          string maps to $s3->endpoint</li>
- * <li>default_acl       string|Services_Amazon_S3_AccessControlList
+ * <li>acl               string|Services_Amazon_S3_AccessControlList
  *                              applies this ACL to new files</li>
  * <li>strict            bool   use strict mode (see below) - the default is
  *                              false</li>
@@ -434,8 +434,8 @@ class Services_Amazon_S3_Stream
             } else {
                 $this->_object->data = '';
             }
-            if (isset($this->_options['default_acl'])) {
-                $this->_object->acl = $this->_options['default_acl'];
+            if (isset($this->_options['acl'])) {
+                $this->_object->acl = $this->_options['acl'];
             }
             try {
                 $this->_object->save();
@@ -463,7 +463,10 @@ class Services_Amazon_S3_Stream
             // Deleting a non-existing bucket causes an exception to be thrown,
             // but deleting a non-existing object does not
             if ($this->_object) {
-                if ($this->_strict && !$this->_object->load()) {
+                if ($this->_strict
+                    && !$this->_object->load(
+                        Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY)
+                ) {
                     // Object does not exist
                     trigger_error('File does not exist', E_USER_WARNING);
                     return false;
@@ -504,6 +507,7 @@ class Services_Amazon_S3_Stream
                 trigger_error('Source does not exist', E_USER_WARNING);
                 return false;
             }
+            $this->_object->loadACL();
 
             $toObject->data         = $this->_object->data;
             $toObject->contentType  = $this->_object->contentType;
@@ -511,7 +515,7 @@ class Services_Amazon_S3_Stream
             $toObject->acl          = $this->_object->acl;
             $toObject->save();
 
-            //$this->_object->delete();
+            $this->_object->delete();
         } catch (Services_Amazon_S3_Exception $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
             return false;
@@ -628,7 +632,10 @@ class Services_Amazon_S3_Stream
                     $stat['mode'] = $stat[2] = self::MODE_DIRECTORY;
                 }
             } else {
-                if ($this->_object && $this->_object->load()) {
+                if ($this->_object
+                    && $this->_object->load(
+                        Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY)
+                ) {
                     $stat = self::$_stat;
                     $stat['mtime'] = $stat[9]  = $this->_object->lastModified;
                     $stat['ctime'] = $stat[10] = $this->_object->lastModified;
@@ -691,7 +698,7 @@ class Services_Amazon_S3_Stream
         if (!$resourceIterator->valid()) {
             // No objects found with specified index - make sure this is in
             // fact a directory
-            if ($this->strict && !is_dir($path)) {
+            if ($this->_strict && !is_dir($path)) {
                 return false;
             }
         }
@@ -847,7 +854,7 @@ class Services_Amazon_S3_Stream
                 $this->_s3->endpoint = $this->_options['endpoint'];
             }
             if (isset($this->_options['strict'])) {
-                $this->strict = $this->_options['strict'];
+                $this->_strict = $this->_options['strict'];
             }
 
             if ($bucketName) {
