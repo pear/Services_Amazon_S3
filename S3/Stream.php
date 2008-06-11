@@ -298,14 +298,16 @@ class Services_Amazon_S3_Stream
 
         $found = false;
         if ($mode == 'r' || $mode == 'a') {
-            $found = $this->_object->load();
+            // $this->_object is null, if $path ends with a slash or does not
+            // contain a path component following the bucket name
+            $found = $this->_object ? $this->_object->load() : false;
         }
         if ($mode == 'r' && !$found) {
-            $error = 'No such file or directory';
+            $error = 'No such file';
         } else {
             // Verify that parent directory exists
             if (!$found && $this->_strict && !is_dir(dirname($path))) {
-                $error = 'No such file or directory';
+                $error = 'No such file';
             }
             $this->_fileHandle = tmpfile();
             if ($found) {
