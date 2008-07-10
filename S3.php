@@ -68,7 +68,7 @@ require_once 'Services/Amazon/S3/Exception.php';
  *
  * Sample usage:
  * <code>
- * require_once 'Service/Amazon/S3.php';
+ * require_once 'Services/Amazon/S3.php';
  * // Replace with your own credentials
  * $accessKeyId = '0PN5J17HBGZHT7JJ3X82';
  * $secretAccessKey = 'uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o';
@@ -105,6 +105,7 @@ require_once 'Services/Amazon/S3/Exception.php';
  *
  * Save an object with public read access:
  * <code>
+ * require_once 'Services/Amazon/S3/AccessControlList.php';
  * $object = $bucket->getObject('foo.txt');
  * $object->acl = Services_Amazon_S3_AccessControlList::ACL_PUBLIC_READ;
  * $object->data = 'lorem ipsum dolor sit amet';
