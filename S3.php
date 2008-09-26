@@ -61,6 +61,7 @@ require_once 'Services/Amazon/S3/Resource.php';
 require_once 'Services/Amazon/S3/Resource/Bucket.php';
 require_once 'Services/Amazon/S3/Resource/Object.php';
 require_once 'Services/Amazon/S3/Exception.php';
+require_once 'Services/Amazon/S3/ServerErrorException.php';
 
 /**
  * The main S3 class contains the credentials used for accessing the S3
