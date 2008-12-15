@@ -813,12 +813,12 @@ class Services_Amazon_S3_Stream
      */
     private function _parsePath($path, $populateProperties = true)
     {
-        if (!preg_match("@^([^:]+)://([^/]*)(/(.*))?$@", $path, $reg)) {
+        if (!preg_match("@^([^:]+)://([^/]*)(/(.*))?$@", $path, $matches)) {
             return array(false, false);
         }
-        $wrapper    = $reg[1]; // the string used in stream_wrapper_register()
-        $bucketName = $reg[2];
-        $key        = isset($reg[4]) ? $reg[4] : false;
+        $wrapper    = $matches[1]; // the string used in stream_wrapper_register()
+        $bucketName = $matches[2];
+        $key        = isset($matches[4]) ? $matches[4] : false;
         if ($populateProperties) {
             $this->_prefix = $key ? rtrim($key, '/') . '/' : '';
 
