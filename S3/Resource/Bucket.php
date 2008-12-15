@@ -99,6 +99,7 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     /**
      * The name of this bucket.
      * @var string (UTF-8)
+     * @link http://docs.amazonwebservices.com/AmazonS3/2006-03-01/BucketRestrictions.html
      */
     public $name;
 
@@ -147,12 +148,36 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
      * Returns the URL of this bucket.
      *
      * @return string  an absolute URL (with a trailing slash)
+     * @throws Services_Amazon_S3_Exception
      */
     public function getURL()
     {
+        // Bucket names must
+        // - be between 3 and 255 characters long.
+        // - contain only letters, digits, periods, dashes and underscores.
+        // - start with a number or letter.
+        // - not be in IP address style (e.g., "192.168.5.4").
+        if (!preg_match('/^(?=[a-z0-9])[a-z0-9._-]{3,255}(?<!\-)$/i',
+                        $this->name)
+            || ip2long($this->name)) {
+
+            throw new Services_Amazon_S3_Exception(
+                'Invalid bucket name: ' . $this->name);
+        }
         $prefix = ($this->s3->useSSL ? 'https' : 'http') . '://';
         switch ($this->requestStyle) {
         case self::REQUEST_STYLE_VIRTUAL_HOST:
+            // When using virtual hosted-style requests, bucket names must also
+            // - be between 3 and 63 characters long.
+            // - be all lowercase.
+            // - not end with a dash.
+            // - not contain periods next to dashes.
+            // - not contain two periods in a row.
+            if (!preg_match('/^(?:[a-z0-9]|(?<!-|\.)\.|(?<!\.)-){3,63}(?<!\-)$/', $this->name)) {
+                throw new Services_Amazon_S3_Exception(
+                    'Invalid bucket name when requestStyle is ' .
+                    'REQUEST_STYLE_VIRTUAL_HOST: ' . $this->name);
+            }
             return $prefix . $this->name . '.s3.amazonaws.com/';
         case self::REQUEST_STYLE_PATH:
             return $prefix . $this->endpoint . '/' .

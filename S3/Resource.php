@@ -91,7 +91,7 @@ abstract class Services_Amazon_S3_Resource
      *
      * @return string  an absolute URL
      */
-    public abstract function getUrl();
+    public abstract function getURL();
 
     /**
      * Loads this resource from the server and propagates relevant properties.  

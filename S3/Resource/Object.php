@@ -176,10 +176,11 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
      * Returns the URL of this object.
      *
      * @return string  an absolute URL
+     * @throws Services_Amazon_S3_Exception
      */
     public function getURL()
     {
-        return $this->bucket->getUrl() . rawurlencode($this->key);
+        return $this->bucket->getURL() . rawurlencode($this->key);
     }
 
     /**
@@ -190,8 +191,7 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
      * @param int $ttl number of seconds the credentials in the URL will work
      *
      * @return string  an absolute URL
-     * @throws Services_Amazon_S3_Exception  if $this->s3 is an anonymous
-     *                                      account
+     * @throws Services_Amazon_S3_Exception
      */
     public function getSignedUrl($ttl)
     {
@@ -200,7 +200,7 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
                                                     $this,
                                                     $subResource,
                                                     array('date' => $expires));
-        return $this->getUrl() .
+        return $this->getURL() .
             '?AWSAccessKeyId=' . rawurlencode($this->s3->accessKeyId) .
             '&Signature=' . rawurlencode($signature) .
             '&Expires=' . $expires;
@@ -210,10 +210,11 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
      * Returns a URL of a .torrent file for this object.
      *
      * @return string  an absolute URL
+     * @throws Services_Amazon_S3_Exception
      */
     public function getTorrentURL()
     {
-        return $this->getUrl() . '?torrent';
+        return $this->getURL() . '?torrent';
     }
 
     /**
