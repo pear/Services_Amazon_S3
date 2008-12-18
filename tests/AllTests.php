@@ -7,6 +7,7 @@ require_once 'PHPUnit/Framework/TestSuite.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
 
 require_once dirname(__FILE__) . '/Test.php';
+require_once dirname(__FILE__) . '/StreamTest.php';
 
 $configFile = dirname(__FILE__) . '/config.php';
 if (file_exists($configFile)) {
@@ -33,6 +34,7 @@ class Services_Amazon_S3_AllTests extends PHPUnit_Framework_TestSuite
     {
         $suite = new Services_Amazon_S3_AllTests('Services_Amazon_S3 Tests');
         $suite->addTestSuite('Services_Amazon_S3_Test');
+        $suite->addTestSuite('Services_Amazon_S3_StreamTest');
 
         return $suite;
     }
