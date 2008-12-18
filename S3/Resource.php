@@ -94,6 +94,33 @@ abstract class Services_Amazon_S3_Resource
     public abstract function getURL();
 
     /**
+     * Returns an URL with credentials included in the query string. This will
+     * allow access to private resources without further authentication, e.g.
+     * using a web browser.
+     *
+     * @param int    $ttl         number of seconds the generated URL is
+     *                            authorized
+     * @param string $subResource e.g. "?acl", "?location", or "?torrent"
+     *                            (including the question mark)
+     *
+     * @return string  an absolute URL
+     * @throws Services_Amazon_S3_Exception
+     */
+    public function getSignedUrl($ttl, $subResource = false)
+    {
+        $expires   = time() + $ttl;
+        $signature = $this->s3->getRequestSignature(HTTP_REQUEST_METHOD_GET,
+                                                    $this,
+                                                    $subResource,
+                                                    array('date' => $expires));
+        return $this->getURL() .
+            ($subResource ? $subResource . '&' : '?') .
+            'AWSAccessKeyId=' . rawurlencode($this->s3->accessKeyId) .
+            '&Signature=' . rawurlencode($signature) .
+            '&Expires=' . $expires;
+    }
+
+    /**
      * Loads this resource from the server and propagates relevant properties.  
      *
      * @return bool  true, if resource exists on server

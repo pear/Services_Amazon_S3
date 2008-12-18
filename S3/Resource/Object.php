@@ -184,29 +184,6 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
     }
 
     /**
-     * Returns an URL with credentials included in the query string. This will
-     * allow access to private resources without further authentication, e.g.
-     * using a web browser.
-     *
-     * @param int $ttl number of seconds the credentials in the URL will work
-     *
-     * @return string  an absolute URL
-     * @throws Services_Amazon_S3_Exception
-     */
-    public function getSignedUrl($ttl)
-    {
-        $expires   = time() + $ttl;
-        $signature = $this->s3->getRequestSignature(HTTP_REQUEST_METHOD_GET,
-                                                    $this,
-                                                    $subResource,
-                                                    array('date' => $expires));
-        return $this->getURL() .
-            '?AWSAccessKeyId=' . rawurlencode($this->s3->accessKeyId) .
-            '&Signature=' . rawurlencode($signature) .
-            '&Expires=' . $expires;
-    }
-
-    /**
      * Returns a URL of a .torrent file for this object.
      *
      * @return string  an absolute URL
