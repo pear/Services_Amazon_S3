@@ -296,26 +296,30 @@ class Services_Amazon_S3_Stream
 
         $this->_mode = $mode;
 
-        $found = false;
-        if ($mode == 'r' || $mode == 'a') {
-            // $this->_object is null, if $path ends with a slash or does not
-            // contain a path component following the bucket name
-            $found = $this->_object ? $this->_object->load() : false;
-        }
-        if ($mode == 'r' && !$found) {
-            $error = 'No such file';
-        } else {
-            // Verify that parent directory exists
-            if (!$found && $this->_strict && !is_dir(dirname($path))) {
-                $error = 'No such file';
+        try {
+            $found = false;
+            if ($mode == 'r' || $mode == 'a') {
+                // $this->_object is null, if $path ends with a slash or does
+                // not contain a path component following the bucket name.
+                $found = $this->_object ? $this->_object->load() : false;
             }
-            $this->_fileHandle = tmpfile();
-            if ($found) {
-                fwrite($this->_fileHandle, $this->_object->data);
-                if ($mode == 'r') {
-                    rewind($this->_fileHandle);
+            if ($mode == 'r' && !$found) {
+                $error = 'No such file';
+            } else {
+                // Verify that parent directory exists.
+                if (!$found && $this->_strict && !is_dir(dirname($path))) {
+                    $error = 'No such file';
+                }
+                $this->_fileHandle = tmpfile();
+                if ($found) {
+                    fwrite($this->_fileHandle, $this->_object->data);
+                    if ($mode == 'r') {
+                        rewind($this->_fileHandle);
+                    }
                 }
             }
+        } catch (Services_Amazon_S3_Exception $e) {
+            $error = $e->getMessage();
         }
 
         if ($error && ($options & STREAM_REPORT_ERRORS)) {
@@ -450,8 +454,8 @@ class Services_Amazon_S3_Stream
             }
             try {
                 $this->_object->save();
-            } catch (Services_Amazon_S3_NotFoundException $e) {
-                // Bucket does not exist
+            } catch (Services_Amazon_S3_Exception $e) {
+                trigger_error($e->getMessage(), E_USER_WARNING);
                 $ok = false;
             }
         }
