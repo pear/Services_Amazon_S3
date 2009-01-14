@@ -7,7 +7,7 @@
  *
  * LICENSE:
  *
- * Copyright (c) 2008, Peytz & Co. A/S
+ * Copyright (c) 2008-2009, Peytz & Co. A/S
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008 Peytz & Co. A/S
+ * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -101,7 +101,7 @@ require_once 'Services/Amazon/S3.php';
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008 Peytz & Co. A/S
+ * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -438,6 +438,15 @@ class Services_Amazon_S3_Stream
             }
             if (isset($this->_options['acl'])) {
                 $this->_object->acl = $this->_options['acl'];
+            }
+            if (isset($this->_options['http_headers'])) {
+                $this->_object->httpHeaders = $this->_options['http_headers'];
+            }
+            if (isset($this->_options['user_metadata'])) {
+                $this->_object->userMetadata = $this->_options['user_metadata'];
+            }
+            if (isset($this->_options['content_type'])) {
+                $this->_object->contentType = $this->_options['content_type'];
             }
             try {
                 $this->_object->save();
