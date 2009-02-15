@@ -440,6 +440,10 @@ class Services_Amazon_S3_Stream
             } else {
                 $this->_object->data = '';
             }
+            // default_acl has been deprecated in favor of acl.
+            if (isset($this->_options['default_acl'])) {
+                $this->_object->acl = $this->_options['default_acl'];
+            }
             if (isset($this->_options['acl'])) {
                 $this->_object->acl = $this->_options['acl'];
             }
