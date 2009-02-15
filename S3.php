@@ -8,7 +8,7 @@
  *
  * LICENSE:
  *
- * Copyright (c) 2008, Peytz & Co. A/S
+ * Copyright (c) 2008-2009, Peytz & Co. A/S
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008 Peytz & Co. A/S
+ * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -116,11 +116,11 @@ require_once 'Services/Amazon/S3/ServerErrorException.php';
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008 Peytz & Co. ApS
+ * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
- */ 
+ */
 class Services_Amazon_S3
 {
     /**
@@ -417,8 +417,11 @@ class Services_Amazon_S3
         if ($method == HTTP_REQUEST_METHOD_PUT) {
             $request->setBody($body);
             // HTTP_Request does not automatically send Content-Length when
-            // body is zero-length
-            $request->addHeader('Content-Length', strlen($body));
+            // body is zero-length.
+            // Use mb_strlen in case function overloading is enabled.
+            $contentLength = function_exists('mb_strlen')
+                ? mb_strlen($string, '8bit') : strlen($string);
+            $request->addHeader('Content-Length', $contentLength);
         }
         foreach ($headers as $name => $value) {
             $request->addHeader($name, $value);
