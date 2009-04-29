@@ -420,7 +420,7 @@ class Services_Amazon_S3
             // body is zero-length.
             // Use mb_strlen in case function overloading is enabled.
             $contentLength = function_exists('mb_strlen')
-                ? mb_strlen($string, '8bit') : strlen($string);
+                ? mb_strlen($body, '8bit') : strlen($body);
             $request->addHeader('Content-Length', $contentLength);
         }
         foreach ($headers as $name => $value) {
