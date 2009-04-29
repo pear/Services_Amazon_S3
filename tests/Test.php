@@ -21,7 +21,7 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
 {
     /**
      * Test of bucket to use for tests.
-     * @var string 40-character string
+     * @var string
      */
     public $bucketName;
 
@@ -46,8 +46,7 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
+     * Creates a bucket for testing.
      */
     protected function setUp() {
         // These constants must be set in order to run the tests
@@ -74,8 +73,7 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tears down the fixture, for example, close a network connection.
-     * This method is called after a test is executed.
+     * Deletes the test bucket and all objects in it.
      */
     protected function tearDown() {
         foreach ($this->bucket->getObjects() as $object) {
