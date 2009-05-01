@@ -120,6 +120,7 @@ class Services_Amazon_S3_StreamTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse(file_exists($file1));
         $this->assertEquals(file_put_contents($file1, 'lorem ipsum'), 11);
+        $this->assertEquals(filesize($file1), 11);
         $this->assertTrue(is_file($file1));
         $this->assertFalse(is_dir($file1));
         $this->assertTrue(is_readable($file1));
