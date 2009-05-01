@@ -25,17 +25,25 @@ Features:
   <email>chsc@peytz.dk</email>
   <active>yes</active>
  </lead>
- <date>2008-04-07</date>
+ <date>2009-05-01</date>
  <version>
-  <release>0.1.0</release>
-  <api>0.1.0</api>
+  <release>0.2.0</release>
+  <api>0.2.0</api>
  </version>
  <stability>
   <release>alpha</release>
   <api>alpha</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
- <notes>First alpha release.</notes>
+ <notes>* Fix Bug #15732: Files get truncated when mbstring overloading is enabled
+* Fix Bug #15312: Warning in getSignedUrl()
+* Fix missing require_once of ServerErrorException.php
+* Make getSignedUrl() available for buckets as well
+* Stream wrapper option "default_acl" renamed to "acl" ("default_acl" is also supported in this release for backwards compatibility - bug #15893)
+* Implement Request #15240: Add ability to set content headers for new objects created via streams
+* Preserve ACL in rename() and actually delete the source, i.e. move not copy
+* Make Services_Amazon_S3_Resource_Bucket::getURL() throw exception if bucket name is valid for current request style
+</notes>
  <contents>
   <dir name="/" baseinstalldir="Services/Amazon">
    <file name="S3.php" role="php">
@@ -81,6 +89,7 @@ Features:
    <dir name="tests">
     <file name="AllTests.php" role="test"/>
     <file name="config.php.dist" role="test"/>
+    <file name="StreamTest.php" role="test"/>
     <file name="Test.php" role="test"/>
    </dir>
   </dir>
@@ -108,4 +117,13 @@ Features:
   </required>
  </dependencies>
  <phprelease/>
+ <changelog>
+  <release>
+   <version>0.1.0</version>
+   <date>2008-04-07</date>
+   <license>BSD</license>
+   <state>alpha</state>
+   <notes>First alpha release.</notes>
+  </release>
+ </changelog>
 </package>
