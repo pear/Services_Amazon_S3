@@ -473,7 +473,6 @@ class Services_Amazon_S3
                 include_once 'Services/Amazon/S3/NotFoundException.php';
                 throw new Services_Amazon_S3_NotFoundException($request);
             } elseif ($request->getResponseCode() >= 500) {
-                include_once 'Services/Amazon/S3/ServerErrorException.php';
                 throw new Services_Amazon_S3_ServerErrorException($request);
             } else {
                 throw new Services_Amazon_S3_Exception($request);
