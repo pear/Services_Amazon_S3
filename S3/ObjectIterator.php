@@ -102,6 +102,13 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
     private $_current;
 
     /**
+     * The value that should be used for the marker parameter in the next
+     * request.
+     * @var string
+     */
+    private $_nextMarker;
+
+    /**
      * Do XPath queries on last request
      * @var DOMXPath
      */
@@ -274,7 +281,7 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
             $query['max-keys'] = $this->maxKeys;
         }
         if ($this->_isTruncated) {
-            $query['marker'] = $this->_current->key;
+            $query['marker'] = $this->_nextMarker;
         }
         if ($this->delimiter) {
             $query['delimiter'] = $this->delimiter;
@@ -291,6 +298,8 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
              /s3:ListBucketResult/s3:CommonPrefixes/s3:Prefix/text()');
         $this->_isTruncated  = $this->_xPath->evaluate(
             'string(/s3:ListBucketResult/s3:IsTruncated) = "true"');
+        $this->_nextMarker   = $this->_xPath->evaluate(
+            'string(/s3:ListBucketResult/s3:NextMarker)');
         $this->_currentIndex = 0;
     }
 }
