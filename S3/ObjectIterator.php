@@ -37,8 +37,8 @@
  *
  * @category  Services
  * @package   Services_Amazon_S3
- * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008 Peytz & Co. A/S
+ * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
+ * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -56,8 +56,8 @@ require_once 'Services/Amazon/S3.php';
  *
  * @category  Services
  * @package   Services_Amazon_S3
- * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008 Peytz & Co. A/S
+ * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
+ * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -255,9 +255,17 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
         }
 
         if ($node->localName == 'Contents') {
-            $key           = $this->_xPath->evaluate('string(s3:Key)', $node);
-            $this->_current =
-                new Services_Amazon_S3_Resource_Object($this->bucket, $key);
+            $key    = $this->_xPath->evaluate('string(s3:Key)', $node);
+            $object = new Services_Amazon_S3_Resource_Object($this->bucket, $key);
+
+            // Initialize properties present in the returned XML.
+            $object->size = $this->_xPath->evaluate('string(s3:Size)', $node);
+            $object->eTag = $this->_xPath->evaluate('string(s3:ETag)', $node);
+            $lastModified =
+                $this->_xPath->evaluate('string(s3:LastModified)', $node);
+            $object->lastModified = strtotime($lastModified);
+
+            $this->_current = $object;
         } else {
             include_once 'Services/Amazon/S3/Prefix.php';
             // $node is a text node
