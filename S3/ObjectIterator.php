@@ -306,8 +306,14 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
              /s3:ListBucketResult/s3:CommonPrefixes/s3:Prefix/text()');
         $this->_isTruncated  = $this->_xPath->evaluate(
             'string(/s3:ListBucketResult/s3:IsTruncated) = "true"');
-        $this->_nextMarker   = $this->_xPath->evaluate(
-            'string(/s3:ListBucketResult/s3:NextMarker)');
+        // <NextMarker> is only present when a delimiter is specified.
+        if ($this->delimiter) {
+            $this->_nextMarker = $this->_xPath->evaluate(
+                'string(/s3:ListBucketResult/s3:NextMarker)');
+        } else {
+            $this->_nextMarker = $this->_xPath->evaluate(
+                'string(/s3:ListBucketResult/s3:Contents[last()]/s3:Key)');
+        }
         $this->_currentIndex = 0;
     }
 }
