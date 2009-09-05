@@ -38,7 +38,7 @@
  *
  * @category  Services
  * @package   Services_Amazon_S3
- * @author    Christian Schmidt <chsc@peytz.dk>
+ * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   CVS: $Id$
@@ -115,7 +115,7 @@ require_once 'Services/Amazon/S3/ServerErrorException.php';
  *
  * @category  Services
  * @package   Services_Amazon_S3
- * @author    Christian Schmidt <chsc@peytz.dk>
+ * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   Release: @package_version@
@@ -504,8 +504,7 @@ class Services_Amazon_S3
         $ok  = $doc->loadXML($request->getResponseBody());
         libxml_use_internal_errors($prevUseInternalErrors);
         if (!$ok) {
-            throw new Services_Amazon_S3_ServerErrorException(
-                'Could not parse response XML', $request);
+            throw new Services_Amazon_S3_ServerErrorException($request);
         }
 
         $xPath = new DOMXPath($doc);
