@@ -121,7 +121,8 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
 
     /**
      * The hostname of the endpoint used for requests done with
-     * REQUEST_STYLE_PATH. This value is initialized from $this->s3->endpoint.
+     * REQUEST_STYLE_PATH and REQUEST_STYLE_VIRTUAL_HOST. This value is
+     * initialized from $this->s3->endpoint.
      * @see Services_Amazon_S3::$endpoint
      * @see Services_Amazon_S3_Resource_Bucket::REQUEST_STYLE_PATH
      */
@@ -178,7 +179,7 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
                     'Invalid bucket name when requestStyle is ' .
                     'REQUEST_STYLE_VIRTUAL_HOST: ' . $this->name);
             }
-            return $prefix . $this->name . '.s3.amazonaws.com/';
+            return $prefix . $this->name . '.' . $this->endpoint . '/';
         case self::REQUEST_STYLE_PATH:
             return $prefix . $this->endpoint . '/' .
                 rawurlencode($this->name) . '/';

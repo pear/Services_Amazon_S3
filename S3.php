@@ -169,8 +169,9 @@ class Services_Amazon_S3
 
     /**
      * The hostname of the endpoint used for requests done by this class and
-     * requests for buckets done with REQUEST_STYLE_PATH. This value may be
-     * specified per bucket using $bucket->endpoint.
+     * requests for buckets done with REQUEST_STYLE_VIRTUAL_HOST and
+     * REQUEST_STYLE_PATH. This value may be specified per bucket using
+     * $bucket->endpoint.
      * @see Services_Amazon_S3_Resource_Bucket::$endpoint
      * @see Services_Amazon_S3_Resource_Bucket::REQUEST_STYLE_PATH
      */
