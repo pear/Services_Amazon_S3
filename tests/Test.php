@@ -150,6 +150,82 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Iterates over the objects in a bucket.
+     */
+    public function testObjectIterator()
+    {
+        $keys = array('abc', 'def', 'ghi/jkl', 'ghi/mno');
+        foreach ($keys as $key) {
+            $object = $this->bucket->getObject($key);
+            $object->data = 'lorem ipsum';
+            $object->save();
+        }
+
+        // Iterate over the objects using "/" as delimiter.
+        $iterator = $this->bucket->getObjects('', '/');
+        $this->assertFalse($iterator->valid());
+
+        // Inspect first object, "abc".
+        $iterator->next();
+        $this->assertTrue($iterator->valid());
+        $object = $iterator->current();
+        $this->assertTrue($object instanceof Services_Amazon_S3_Resource_Object);
+        $this->assertEquals('abc', $iterator->key());
+        $this->assertEquals('abc', $object->key);
+        $this->assertEquals(11, $object->size);
+        $this->assertNull($object->data);
+        // Allow local clock skew of up to 30 minutes.
+        $this->assertGreaterThan(time() - 1800, $object->lastModified);
+        $this->assertLessThan(time() + 1800, $object->lastModified);
+
+        // Inspect next object, "def".
+        $iterator->next();
+        $object = $iterator->current();
+        $this->assertEquals('def', $object->key);
+
+        // Inspect prefix "ghi/".
+        $iterator->next();
+        $object = $iterator->current();
+        $this->assertTrue($object instanceof Services_Amazon_S3_Prefix);
+        $this->assertEquals('ghi/', $object->prefix);
+        $this->assertEquals('ghi/', $iterator->key());
+
+        // Verify that there are no more elements.
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
+
+
+        // Iterate over the objects with the prefix "ghi/".
+        $iterator = $this->bucket->getObjects('ghi/', '/');
+        $iterator->next();
+        $object = $iterator->current();
+        $this->assertEquals('ghi/jkl', $object->key);
+
+        $iterator->next();
+        $objectMno = $iterator->current();
+        $this->assertEquals('ghi/mno', $objectMno->key);
+
+        // Verify that there are no more elements.
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
+
+
+        // Test iterating over more objects than is returned in one HTTP
+        // request.
+        $iterator = $this->bucket->getObjects();
+        $iterator->maxKeys = 2;
+        $objects = iterator_to_array($iterator);
+        $this->assertEquals($keys, array_keys($objects));
+
+        // Test the same again but with a delimiter (slightly different code
+        // path in Services_Amazon_S3_ObjectIterator::_sendRequest()).
+        $iterator = $this->bucket->getObjects('', '/');
+        $iterator->maxKeys = 2;
+        $objects = iterator_to_array($iterator);
+        $this->assertEquals(array('abc', 'def', 'ghi/'), array_keys($objects));
+    }
+
+    /**
      * Tries to delete a bucket that is not empty.
      */
     public function testDeleteNonEmptyBucket()
@@ -166,7 +242,7 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
     /**
      * Tries to fetch an object using a key that is malformed UTF-8.
      */
-    public function testMalformetUTF8()
+    public function testMalformedUTF8()
     {
         $object = $this->bucket->getObject(chr(0xE9));
         try {
