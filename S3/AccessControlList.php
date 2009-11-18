@@ -307,8 +307,8 @@ class Services_Amazon_S3_AccessControlList
      */
     public function load()
     {
-        $request = $this->resource->s3->sendRequest($this->resource, '?acl');
-        $xPath   = Services_Amazon_S3::getDOMXPath($request);
+        $response = $this->resource->s3->sendRequest($this->resource, '?acl');
+        $xPath    = Services_Amazon_S3::getDOMXPath($response);
 
         $this->ownerId = $xPath->evaluate(
             'string(/s3:AccessControlPolicy/s3:Owner/s3:ID)');
@@ -340,7 +340,7 @@ class Services_Amazon_S3_AccessControlList
             default:
                 // TYPE_AMAZON_CUSTOMER_BY_EMAIL is never sent by the server
                 throw new Services_Amazon_S3_Exception(
-                    'Invalid grantee type : ' . $type, $request);
+                    'Invalid grantee type : ' . $type, $response);
             }
 
             $key = $this->_getGranteeKey($grantee);
@@ -352,7 +352,7 @@ class Services_Amazon_S3_AccessControlList
             $permission = $xPath->evaluate('string(s3:Permission)', $elGrant);
             if (!isset(self::$_string2flag[$permission])) {
                 throw new Services_Amazon_S3_Exception(
-                    'Invalid permission value: ' . $permission, $request);
+                    'Invalid permission value: ' . $permission, $response);
             }
             $this->_grantees[$key]['permissions'] |= self::$_string2flag[$permission];
         }
@@ -420,7 +420,7 @@ class Services_Amazon_S3_AccessControlList
         }
         $headers = array('content-type' => 'application/xml');
         $this->resource->s3->sendRequest($this->resource, '?acl', null,
-                                         HTTP_REQUEST_METHOD_PUT, $headers,
+                                         HTTP_Request2::METHOD_PUT, $headers,
                                          $doc->saveXML());
     }
 } 

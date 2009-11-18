@@ -298,9 +298,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
             $query['prefix'] = $this->prefix;
         }
 
-        $request = $this->bucket->s3->sendRequest($this->bucket, '', $query);
+        $response = $this->bucket->s3->sendRequest($this->bucket, '', $query);
 
-        $this->_xPath        = Services_Amazon_S3::getDOMXPath($request);
+        $this->_xPath        = Services_Amazon_S3::getDOMXPath($response);
         $this->_nodeList     = $this->_xPath->evaluate(
             '/s3:ListBucketResult/s3:Contents |
              /s3:ListBucketResult/s3:CommonPrefixes/s3:Prefix/text()');

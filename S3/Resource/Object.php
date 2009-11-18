@@ -1,5 +1,7 @@
 <?php
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 /**
  * Services_Amazon_S3_Resource_Object, represents an Amazon S3 object, i.e. a
  * file stored in the S3 storage service
@@ -208,10 +210,10 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
     public function load($what = self::LOAD_DATA)
     {
         $method = ($what == self::LOAD_METADATA_ONLY)
-            ? HTTP_REQUEST_METHOD_HEAD : HTTP_REQUEST_METHOD_GET;
+            ? HTTP_Request2::METHOD_HEAD : HTTP_Request2::METHOD_GET;
 
         try {
-            $request = $this->s3->sendRequest($this, false, null, $method);
+            $response = $this->s3->sendRequest($this, false, null, $method);
         } catch (Services_Amazon_S3_NotFoundException $e) {
             // Trying to load an non-existing object should not trigger an
             // exception - it is the proper way to detect whether an object
@@ -220,16 +222,13 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         }
 
         $this->exists       = true;
-        $this->eTag         = $request->getResponseHeader('etag');
-        $this->size         = intval(
-            $request->getResponseHeader('content-length'));
-        $this->lastModified = strtotime(
-            $request->getResponseHeader('last-modified'));
-        $this->contentType  =
-            $request->getResponseHeader('content-type');
+        $this->eTag         = $response->getHeader('etag');
+        $this->size         = intval($response->getHeader('content-length'));
+        $this->lastModified = strtotime($response->getHeader('last-modified'));
+        $this->contentType  = $response->getHeader('content-type');
         $this->userMetadata = array();
         $this->httpHeaders  = array();
-        foreach ($request->getResponseHeader() as $name => $value) {
+        foreach ($response->getHeader() as $name => $value) {
             $name = strtolower($name);
             if (strncmp($name, 'x-amz-meta-', 11) == 0) {
                 $this->userMetadata[substr($name, 11)] = $value;
@@ -237,8 +236,8 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
                 $this->httpHeaders[$name] = $value;
             }
         }
-        if ($method == HTTP_REQUEST_METHOD_GET) {
-            $this->data = $request->getResponseBody();
+        if ($method == HTTP_Request2::METHOD_GET) {
+            $this->data = $response->getBody();
         } else {
             $this->data = null;
         }
@@ -263,20 +262,24 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         }
 
         $headers = array();
+
         if ($this->contentType) {
             $headers['content-type'] = $this->contentType;
         } else {
-            // If no Content-Type is assigned by the client, S3 uses
-            // binary/octet-stream. However, HTTP_Request 1.4.2 does not
-            // support PUT without a Content-Type, so we must specify it
-            // explicitly.
+            // If no content-type is specified, the HTTP_Request2 package
+            // sets a content-type of 'application/x-www-form-urlencoded'.
+            // Amazon S3 says if the content-type is not specified, it should
+            // be 'binary/octet-stream'. We set it explicitly here so the
+            // correct value is sent and the request is signed correctly.
             $headers['content-type'] = 'binary/octet-stream';
         }
+
         if (strlen($this->data) == 0) {
-            // HTTP_Request 1.4.2 does not send Content-Type when body is empty,
-            // so remove this before signing the request
+            // HTTP_Request2 0.4.1 does not send content-type when body is
+            // empty, so remove this before signing the request
             unset($headers['content-type']);
         }
+
         foreach ($this->userMetadata as $name => $value) {
             $headers['x-amz-meta-' . strtolower($name)] = $value;
         }
@@ -291,11 +294,11 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
             $headers['x-amz-acl'] = $this->acl;
         }
 
-        $request = $this->s3->sendRequest($this, false, null,
-                                          HTTP_REQUEST_METHOD_PUT,
+        $response = $this->s3->sendRequest($this, false, null,
+                                          HTTP_Request2::METHOD_PUT,
                                           $headers, $this->data);
 
-        $this->eTag = $request->getResponseHeader('etag');
+        $this->eTag = $response->getHeader('etag');
         if ($this->acl instanceof Services_Amazon_S3_AccessControlList) {
             $this->acl->save();
         }

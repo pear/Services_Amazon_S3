@@ -109,7 +109,7 @@ abstract class Services_Amazon_S3_Resource
     public function getSignedUrl($ttl, $subResource = false)
     {
         $expires   = time() + $ttl;
-        $signature = $this->s3->getRequestSignature(HTTP_REQUEST_METHOD_GET,
+        $signature = $this->s3->getRequestSignature(HTTP_Request2::METHOD_GET,
                                                     $this,
                                                     $subResource,
                                                     array('date' => $expires));
@@ -121,7 +121,7 @@ abstract class Services_Amazon_S3_Resource
     }
 
     /**
-     * Loads this resource from the server and propagates relevant properties.  
+     * Loads this resource from the server and propagates relevant properties.
      *
      * @return bool  true, if resource exists on server
      * @throws Services_Amazon_S3_Exception
@@ -144,10 +144,10 @@ abstract class Services_Amazon_S3_Resource
      */
     public function delete()
     {
-        $request = $this->s3->sendRequest($this, false, null,
-                                          HTTP_REQUEST_METHOD_DELETE);
-        if ($request->getResponseCode() != 204) {
-            throw new Services_Amazon_S3_Exception($request);
+        $response = $this->s3->sendRequest($this, false, null,
+                                          HTTP_Request2::METHOD_DELETE);
+        if ($response->getStatus() != 204) {
+            throw new Services_Amazon_S3_Exception($response);
         }
     }
 

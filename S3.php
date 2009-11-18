@@ -1,5 +1,7 @@
 <?php
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 /**
  * Services_Amazon_S3, a PHP5 API for accessing the Amazon Simple Storage
  * Service, Amazon S3.
@@ -48,14 +50,14 @@
  */
 
 /**
- * Use HTTP_Request for connecting to the S3 REST interface.
+ * Use HTTP_Request2 for connecting to the S3 REST interface.
  */
-require_once 'HTTP/Request.php';
+require_once 'HTTP/Request2.php';
 
 /**
- * Use Crypt_HMAC for signing REST requests.
+ * Use Crypt_HMAC2 for signing REST requests.
  */
-require_once 'Crypt/HMAC.php';
+require_once 'Crypt/HMAC2.php';
 
 require_once 'Services/Amazon/S3/Resource.php';
 require_once 'Services/Amazon/S3/Resource/Bucket.php';
@@ -155,6 +157,14 @@ class Services_Amazon_S3
     public $httpOptions = array('allowRedirects' => true);
 
     /**
+     * Options for HTTP_Request2, e.g. proxy server, timeout etc.
+     * NOTE: Some options may interfere with this service.
+     * @var array  options array for HTTP_Request.
+     * @see HTTP_Request2::HTTP_Request2()
+     */
+    public $httpConfig = array();
+
+    /**
      * The default method for accessing buckets. This value may be specified
      * per bucket using $bucket->requestStyle.
      * @var string  a Services_Amazon_S3::REQUEST_STYLE_xxx constant
@@ -180,7 +190,7 @@ class Services_Amazon_S3
     /**
      * Whether connections should be made using HTTPS.
      * @var bool
-     */ 
+     */
     public $useSSL = false;
 
     /**
@@ -202,11 +212,31 @@ class Services_Amazon_S3
     public $maxRetries = 2;
 
     /**
+     * @var HTTP_Request2
+     */
+    protected $request = null;
+
+    /**
      * Private constructor. Use Services_Amazon_S3::getService() or
      * Services_Amazon_S3::getAnonymousService().
      */
     private function __construct()
     {
+        $this->request = new HTTP_Request2();
+    }
+
+    /**
+     * Sets the HTTP request object to use
+     *
+     * Can be used to mock requests for testing.
+     *
+     * @param HTTP_Request2 $request the HTTP request object to use.
+     *
+     * @return void
+     */
+    public function setRequest(HTTP_Request2 $request)
+    {
+        $this->request = $request;
     }
 
     /**
@@ -313,7 +343,7 @@ class Services_Amazon_S3
                                         $subResource, $headers)
     {
         $stringToSign = $method . "\n" .
-            (isset($headers['content-md5']) ? $headers['content-md5'] : '') . 
+            (isset($headers['content-md5']) ? $headers['content-md5'] : '') .
             "\n" .
             (isset($headers['content-type']) ? $headers['content-type'] : '') .
             "\n" .
@@ -328,6 +358,9 @@ class Services_Amazon_S3
         }
         ksort($amzHeaders);
         foreach ($amzHeaders as $name => $value) {
+            // unfold long headers
+            $value = preg_replace('/\s*\n\s*/', ' ', $value);
+            // add to string
             $stringToSign .= $name . ':' . $value . "\n";
         }
 
@@ -343,6 +376,7 @@ class Services_Amazon_S3
         $stringToSign .= $subResource;
 
         return $this->signString($stringToSign);
+
     }
 
     /**
@@ -350,7 +384,8 @@ class Services_Amazon_S3
      *
      * @param string $stringToSign UTF-8
      *
-     * @return string  a 28 character string
+     * @return string a 28 character string.
+     *
      * @throws Services_Amazon_S3_Exception  if this is an anonymous account
      */
     public function signString($stringToSign)
@@ -359,9 +394,13 @@ class Services_Amazon_S3
             throw new Services_Amazon_S3_Exception(
                 'Anonymous account cannot sign strings');
         }
+
         // Generate signature
-        $crypt = new Crypt_HMAC($this->secretAccessKey, 'sha1');
-        return base64_encode(pack('H*', $crypt->hash($stringToSign)));
+        $hmac = new Crypt_HMAC2($this->secretAccessKey, 'SHA1');
+        $signature = $hmac->hash($stringToSign, Crypt_HMAC2::BINARY);
+
+        // Amazon wants the signature value base64-encoded
+        return base64_encode($signature);
     }
 
     /**
@@ -378,14 +417,14 @@ class Services_Amazon_S3
      *                            all keys must be in lowercase
      * @param string $body        HTTP request body for PUT requests
      *
-     * @return HTTP_Request
+     * @return HTTP_Request2_Response
      *
      * @throws Services_Amazon_S3_Exception
      */
     public function sendRequest($resource,
                                 $subResource = false,
                                 $query = null,
-                                $method = HTTP_REQUEST_METHOD_GET,
+                                $method = HTTP_Request2::METHOD_GET,
                                 array $headers = array(),
                                 $body = false)
     {
@@ -396,6 +435,7 @@ class Services_Amazon_S3
             $headers['authorization'] = 'AWS ' . $this->accessKeyId . ':' .
                 $this->getRequestSignature($method, $resource,
                                            $subResource, $headers);
+
         }
 
         // Generate URL
@@ -413,36 +453,32 @@ class Services_Amazon_S3
         }
 
         // Send request
-        $request = new HTTP_Request($url, $this->httpOptions);
-        $request->setMethod($method);
-        if ($method == HTTP_REQUEST_METHOD_PUT) {
-            $request->setBody($body);
-            // HTTP_Request does not automatically send Content-Length when
-            // body is zero-length.
-            // Use mb_strlen in case function overloading is enabled.
-            $contentLength = function_exists('mb_strlen')
-                ? mb_strlen($body, '8bit') : strlen($body);
-            $request->addHeader('Content-Length', $contentLength);
-        }
-        foreach ($headers as $name => $value) {
-            $request->addHeader($name, $value);
-        }
+        try {
+            $request = clone $this->request;
 
-        for ($i = 0; $i <= $this->maxRetries; $i++) {
-            $result = $request->sendRequest();
+            $request->setConfig($this->httpConfig);
+            $request->setUrl($url);
+            $request->setMethod($method);
 
-            if (!$result instanceof PEAR_Error &&
-                $request->getResponseCode() != 500) {
-
-                break;
+            if ($method === HTTP_Request2::METHOD_PUT) {
+                $request->setBody($body);
             }
+
+            $request->setHeader($headers);
+
+            for ($i = 0; $i <= $this->maxRetries; $i++) {
+                $response = $request->send();
+                if ($response->getStatus() != 500) {
+                    break;
+                }
+            }
+        } catch (HTTP_Request2_Exception $e) {
+            throw new Services_Amazon_S3_Exception($e->getMessage(),
+                                                   $e->getCode());
         }
 
-        if ($result instanceof PEAR_Error) {
-            throw new Services_Amazon_S3_Exception($result->getMessage(),
-                                                   $result->getCode());
-        } else if ($request->getResponseCode() >= 300) {
-            if ($request->getResponseCode() == 301) {
+        if ($response->getStatus() >= 300) {
+            if ($response->getStatus() == 301) {
                 // Permanents redirects without a Location header indicates that
                 // the wrong endpoint is being used, e.g. due to DNS problems. A
                 // temporary fix is to change /etc/hosts or similar on the local
@@ -451,12 +487,13 @@ class Services_Amazon_S3
                 $message = $xPath->evaluate('concat(string(/Error/Message),
                                                     " Endpoint: ",
                                                     string(/Error/Endpoint))');
-                throw new Services_Amazon_S3_Exception($message ? $message : $request);
-            } elseif ($request->getResponseCode() == 403
-                      && $method == HTTP_REQUEST_METHOD_GET
+
+                throw new Services_Amazon_S3_Exception($message ? $message : $response);
+            } elseif ($response->getStatus() == 403
+                      && $method == HTTP_Request2::METHOD_GET
             ) {
                 // getDOMXPath() may throw a Services_Amazon_S3_ServerErrorException
-                $xPath = self::getDOMXPath($request);
+                $xPath = self::getDOMXPath($response);
                 $code  = $xPath->evaluate('string(/Error/Code)');
 
                 // RequestTimeTooSkewed indicates that local clock is scewed.
@@ -466,45 +503,44 @@ class Services_Amazon_S3
                     && $code != 'SignatureDoesNotMatch'
                 ) {
                     include_once 'Services/Amazon/S3/AccessDeniedException.php';
-                    throw new Services_Amazon_S3_AccessDeniedException($request);
+                    throw new Services_Amazon_S3_AccessDeniedException($response);
                 } else {
-                    throw new Services_Amazon_S3_Exception($request);
+                    throw new Services_Amazon_S3_Exception($response);
                 }
-            } elseif ($request->getResponseCode() == 404) {
+            } elseif ($response->getStatus() == 404) {
                 include_once 'Services/Amazon/S3/NotFoundException.php';
-                throw new Services_Amazon_S3_NotFoundException($request);
-            } elseif ($request->getResponseCode() >= 500) {
-                throw new Services_Amazon_S3_ServerErrorException($request);
+                throw new Services_Amazon_S3_NotFoundException($response);
+            } elseif ($response->getStatus() >= 500) {
+                throw new Services_Amazon_S3_ServerErrorException($response);
             } else {
-                throw new Services_Amazon_S3_Exception($request);
+                throw new Services_Amazon_S3_Exception($response);
             }
         }
 
-        return $request;
+        return $response;
     }
 
     /**
-     * Returns a DOMXPath object for the XML document in the response body of
-     * the specified HTTP request. This method is for internal use only.
+     * Returns a DOMXPath object for the XML document in the body of the
+     * specified HTTP response. This method is for internal use only.
      *
-     * @param HTTP_Request $request a request where $request->sendRequest() has
-     *                              been called successfully
+     * @param HTTP_Request2_Response $response the HTTP response.
      *
      * @return DOMXPath
      * @throws Services_Amazon_S3_ServerErrorException
      */
-    public static function getDOMXPath(HTTP_Request $request)
+    public static function getDOMXPath(HTTP_Request2_Response $response)
     {
-        if ($request->getResponseHeader('content-type') != 'application/xml') {
+        if ($response->getHeader('content-type') != 'application/xml') {
             throw new Services_Amazon_S3_ServerErrorException(
-                'Response was not of type application/xml', $request);
+                'Response was not of type application/xml', $response);
         }
         $prevUseInternalErrors = libxml_use_internal_errors(true);
         $doc = new DOMDocument();
-        $ok  = $doc->loadXML($request->getResponseBody());
+        $ok  = $doc->loadXML($response->getBody());
         libxml_use_internal_errors($prevUseInternalErrors);
         if (!$ok) {
-            throw new Services_Amazon_S3_ServerErrorException($request);
+            throw new Services_Amazon_S3_ServerErrorException($response);
         }
 
         $xPath = new DOMXPath($doc);

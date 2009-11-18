@@ -64,17 +64,17 @@ require_once 'PEAR/Exception.php';
 class Services_Amazon_S3_Exception extends PEAR_Exception
 {
     /**
-     * The HTTP request that caused the unexpected response.    
+     * The unexpected HTTP response.
      * The HTTP status code may indicate the error - see RFC 2616, section
      * 10 for an explanation of the different status codes.
      * The response body may contain an XML document containing an Amazon S3
      * error code.
-     * @var HTTP_Request
-     * @see HTTP_Request::getResponseCode()
-     * @see HTTP_Request::getResponseBody()
+     * @var HTTP_Request2_Response
+     * @see HTTP_Request2_Response::getStatus()
+     * @see HTTP_Request2_Response::getBody()
      * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec10
      */
-    public $request;
+    public $response;
 
     /**
      * The Amazon S3 error code
@@ -86,24 +86,24 @@ class Services_Amazon_S3_Exception extends PEAR_Exception
     /**
      * Constructor.
      *
-     * @param string|HTTP_Request $messageOrRequest a string (UTF-8) describing
-     *                                              the error, or the
-     *                                              HTTP_Request that caused
-     *                                              the exception
-     * @param int                 $code             the error code
+     * @param string|HTTP_Request $messageOrResponse a string (UTF-8) describing
+     *                                               the error, or the
+     *                                               HTTP_Request2_Response that
+	 *                                               caused the exception.
+     * @param int                 $code              the error code.
      */
-    public function __construct($messageOrRequest, $code = 0)
+    public function __construct($messageOrResponse, $code = 0)
     {
         $message = false;
-        if ($messageOrRequest instanceof HTTP_Request) {
-            $this->request = $messageOrRequest;
-            $contentType   = $this->request->getResponseHeader('content-type'); 
+        if ($messageOrResponse instanceof HTTP_Request2_Response) {
+            $this->response = $messageOrResponse;
+            $contentType   = $this->response->getHeader('content-type');
             if ($contentType == 'application/xml' &&
-                $this->request->getResponseBody()) {
+                $this->response->getBody()) {
 
                 $prevUseInternalErrors = libxml_use_internal_errors(true);
                 $doc = new DOMDocument();
-                $ok = $doc->loadXML($this->request->getResponseBody());
+                $ok = $doc->loadXML($this->response->getBody());
                 libxml_use_internal_errors($prevUseInternalErrors);
                 if ($ok) {
                     $xPath = new DOMXPath($doc);
@@ -115,12 +115,11 @@ class Services_Amazon_S3_Exception extends PEAR_Exception
             }
 
             if (!$message) {
-                $message = 'Bad response from server, URL: ' .
-                           $this->request->getURL();
+                $message = 'Bad response from server.';
             }
 
             if (!$code) {
-                $code = $this->request->getResponseCode();
+                $code = $this->response->getStatus();
             }
         } else {
             $message = (string) $messageOrRequest;

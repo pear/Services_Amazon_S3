@@ -230,7 +230,7 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     }
 
     /**
-     * Loads this resource from the server and propagates relevant properties.  
+     * Loads this resource from the server and propagates relevant properties.
      *
      * @return bool  true, if resource exists on server
      * @throws Services_Amazon_S3_Exception
@@ -239,7 +239,7 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     {
         try {
             $this->s3->sendRequest($this, false, null,
-                                   HTTP_REQUEST_METHOD_HEAD);
+                                   HTTP_Request2::METHOD_HEAD);
             $this->exists = true;
         } catch (Services_Amazon_S3_NotFoundException $e) {
             // Trying to load an non-existing bucket should not trigger an
@@ -274,21 +274,15 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
                           '</LocationConstraint>' .
                         '</CreateBucketConfiguration>';
             } else {
-                $body = false;
-                // Setting length explicitly is currently required by
-                // HTTP_Request
-                $headers['content-length'] = 0;
+                $body = '';
             }
-            $request = $this->s3->sendRequest($this, false, null,
-                                              HTTP_REQUEST_METHOD_PUT,
+            $response = $this->s3->sendRequest($this, false, null,
+                                              HTTP_Request2::METHOD_PUT,
                                               $headers, $body);
 
         } elseif (is_string($this->acl)) {
-            // Setting length explicitly for empty bodies is currently required
-            // by HTTP_Request
-            $headers['content-length'] = 0;
             $this->s3->sendRequest($this, '?acl', null,
-                                   HTTP_REQUEST_METHOD_PUT, $headers);
+                                   HTTP_Request2::METHOD_PUT, $headers);
         }
 
         if ($this->acl instanceof Services_Amazon_S3_AccessControlList) {
@@ -305,9 +299,9 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
      */
     public function loadLocationConstraint()
     {
-        $request = $this->s3->sendRequest($this, '?location');
-        $xPath   = Services_Amazon_S3::getDOMXPath($request);
-        $s       = $xPath->evaluate('string(/s3:LocationConstraint)');
+        $response = $this->s3->sendRequest($this, '?location');
+        $xPath    = Services_Amazon_S3::getDOMXPath($response);
+        $s        = $xPath->evaluate('string(/s3:LocationConstraint)');
 
         $this->locationConstraint = $s ? $s : false;
     }
