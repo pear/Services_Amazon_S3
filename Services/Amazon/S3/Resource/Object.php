@@ -303,6 +303,110 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
             $this->acl->save();
         }
     }
+
+    /**
+     * Copies data to this object from another S3 object
+     *
+     * @param Services_Amazon_S3_Resource_Object $source the object from which
+     *        to copy.
+     * @param boolean                            $copyMetadata optional. Whether
+     *        or not to copy the metadata from the <kbd>$source</kbd> or replace
+     *        it with the metadata specified in this object. If true, the meta-
+     *        data is copied from the source object. If false, the metadata set
+     *        on this object is saved. Defaults to true.
+     *
+     * @return void
+     */
+    public function copyFrom(
+        Services_Amazon_S3_Resource_Object $source,
+        $copyMetadata = true
+    ) {
+        // when overwriting an object, the existing acl is lost
+        if ($this->exists && !$this->acl) {
+            $this->loadACL();
+        }
+
+        $headers = array();
+        $headers['x-amz-copy-source'] = '/' . rawurlencode($source->bucket->name) .
+                                        '/' . rawurlencode($source->key);
+
+        if ($copyMetadata) {
+            $headers['x-amz-metadata-directive'] = 'COPY';
+        } else {
+            $headers['x-amz-metadata-directive'] = 'REPLACE';
+
+            if ($this->contentType) {
+                $headers['content-type'] = $this->contentType;
+            }
+
+            foreach ($this->userMetadata as $name => $value) {
+                $headers['x-amz-meta-' . strtolower($name)] = $value;
+            }
+        }
+
+        if (!isset($headers['content-type'])) {
+            // If no content-type is specified, the HTTP_Request2 package
+            // sets a content-type of 'application/x-www-form-urlencoded'.
+            // Amazon S3 says if the content-type is not specified, it should
+            // be 'binary/octet-stream'. We set it explicitly here so the
+            // correct value is sent and the request is signed correctly.
+            $headers['content-type'] = 'binary/octet-stream';
+        }
+
+        foreach ($this->httpHeaders as $name => $value) {
+            $name = strtolower($name);
+            if (in_array($name, self::$allowedHeaders)) {
+                $headers[$name] = $value;
+            }
+        }
+
+        if (is_string($this->acl)) {
+            $headers['x-amz-acl'] = $this->acl;
+        }
+
+        $response = $this->s3->sendRequest(
+            $this,
+            false,
+            null,
+            HTTP_Request2::METHOD_PUT,
+            $headers
+        );
+
+        $xPath = Services_Amazon_S3::getDOMXPath($response);
+
+        $this->eTag = $xPath->evaluate(
+            'string(s3:CopyObjectResult/s3:ETag)'
+        );
+
+        $this->lastModified = $xPath->evaluate(
+            'string(s3:CopyObjectResult/s3:LastModified)'
+        );
+
+        if ($this->acl instanceof Services_Amazon_S3_AccessControlList) {
+            $this->acl->save();
+        }
+    }
+
+    /**
+     * Copies data from this object to another S3 object
+     *
+     * @param Services_Amazon_S3_Resource_Object $target the object to which
+     *        this object is copied.
+     * @param boolean                            $copyMetadata optional. Whether
+     *        or not to copy the metadata to the <kbd>$target</kbd> or use the
+     *        metadata specified on this target. If true, the metadata is
+     *        copied from this object. If false, the metadata set on the
+     *        on target is used. Defaults to true.
+     *
+     * @return void
+     */
+    public function copyTo(
+        Services_Amazon_S3_Resource_Object $target,
+        $copyMetadata = true
+    ) {
+        $target->copyFrom($this, $copyMetadata);
+    }
+
 }
 
 ?>
