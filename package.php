@@ -58,7 +58,8 @@ $release_version = '0.3.0';
 $release_state   = 'alpha';
 $release_notes   =
     " * Implemented Req #15239. Use HTTP_Request2. This allows for better " .
-    "   forwards-compatibility with PHP.\n";
+    "   forwards-compatibility with PHP.\n" .
+    " * Implemented Req #14751. Add S3 object copy method.\n";
 
 $description =
     "This package provides an object-oriented interface to the Amazon " .
