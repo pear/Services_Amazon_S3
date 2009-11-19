@@ -222,7 +222,7 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         }
 
         $this->exists       = true;
-        $this->eTag         = $response->getHeader('etag');
+        $this->eTag         = trim($response->getHeader('etag'), '"');
         $this->size         = intval($response->getHeader('content-length'));
         $this->lastModified = strtotime($response->getHeader('last-modified'));
         $this->contentType  = $response->getHeader('content-type');
@@ -298,7 +298,7 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
                                           HTTP_Request2::METHOD_PUT,
                                           $headers, $this->data);
 
-        $this->eTag = $response->getHeader('etag');
+        $this->eTag = trim($response->getHeader('etag'), '"');
         if ($this->acl instanceof Services_Amazon_S3_AccessControlList) {
             $this->acl->save();
         }
@@ -374,8 +374,11 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
 
         $xPath = Services_Amazon_S3::getDOMXPath($response);
 
-        $this->eTag = $xPath->evaluate(
-            'string(s3:CopyObjectResult/s3:ETag)'
+        $this->eTag = trim(
+            $xPath->evaluate(
+                'string(s3:CopyObjectResult/s3:ETag)'
+            ),
+            '"'
         );
 
         $this->lastModified = $xPath->evaluate(
