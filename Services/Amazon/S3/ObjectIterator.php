@@ -1,5 +1,7 @@
 <?php
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 /**
  * Services_Amazon_S3_ObjectIterator, an iterator over objects in a bucket
  *
@@ -260,7 +262,10 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
 
             // Initialize properties present in the returned XML.
             $object->size = $this->_xPath->evaluate('string(s3:Size)', $node);
-            $object->eTag = $this->_xPath->evaluate('string(s3:ETag)', $node);
+            $object->eTag = trim(
+                $this->_xPath->evaluate('string(s3:ETag)', $node),
+                '"'
+            );
             $lastModified =
                 $this->_xPath->evaluate('string(s3:LastModified)', $node);
             $object->lastModified = strtotime($lastModified);
