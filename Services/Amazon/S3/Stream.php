@@ -42,7 +42,7 @@
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -105,7 +105,7 @@ require_once 'Services/Amazon/S3.php';
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   @release-version@
+ * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 class Services_Amazon_S3_Stream
@@ -525,9 +525,9 @@ class Services_Amazon_S3_Stream
             // Deleting a non-existing bucket causes an exception to be thrown,
             // but deleting a non-existing object does not
             if ($this->_object) {
-                if ($this->_strict
-                    && !$this->_object->load(
-                        Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY)
+                $mode = Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY;
+                if (   $this->_strict
+                    && !$this->_object->load($mode)
                 ) {
                     // Object does not exist
                     trigger_error('File does not exist', E_USER_WARNING);
@@ -630,7 +630,8 @@ class Services_Amazon_S3_Stream
         if ($this->_object) {
             return (bool) file_put_contents(
                 $path . '_$folder$',
-                'This is a placeholder created by ' . __METHOD__);
+                'This is a placeholder created by ' . __METHOD__
+            );
         } else {
             $this->_bucket->save();
             return true;
@@ -706,9 +707,9 @@ class Services_Amazon_S3_Stream
                     $stat['mode'] = $stat[2] = self::MODE_DIRECTORY;
                 }
             } else {
-                if ($this->_object
-                    && $this->_object->load(
-                        Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY)
+                $mode = Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY;
+                if (   $this->_object
+                    && $this->_object->load($mode)
                 ) {
                     $stat = self::$_stat;
                     $stat['mtime'] = $stat[9]  = $this->_object->lastModified;
@@ -716,10 +717,10 @@ class Services_Amazon_S3_Stream
                     $stat['size']  = $stat[7]  = $this->_object->size;
                     $stat['mode']  = $stat[2]  = self::MODE_FILE;
                 } else {
-                    if ($this->_isPrefix() ||
-                        substr($this->_prefix, -10) != '_$folder$/' &&
-                        file_exists($path . '_$folder$')) {
-
+                    if (   $this->_isPrefix()
+                        || substr($this->_prefix, -10) != '_$folder$/'
+                        && file_exists($path . '_$folder$')
+                    ) {
                         $stat['mode'] = $stat[2] = self::MODE_DIRECTORY;
                     }
                 }
@@ -915,15 +916,17 @@ class Services_Amazon_S3_Stream
                 $this->context = stream_context_get_default();
             }
             // Array of options for all stram wrappers
-            $options       = stream_context_get_options($this->context);
+            $options = stream_context_get_options($this->context);
             $this->_options = isset($options[$wrapper])
                 ? $options[$wrapper] : array();
-            if (isset($this->_options['access_key_id'],
-                      $this->_options['secret_access_key'])) {
 
+            if (   isset($this->_options['access_key_id'])
+                && isset($this->_options['secret_access_key'])
+            ) {
                 $this->_s3 = Services_Amazon_S3::getAccount(
                     $this->_options['access_key_id'],
-                    $this->_options['secret_access_key']);
+                    $this->_options['secret_access_key']
+                );
             } else {
                 $this->_s3 = Services_Amazon_S3::getAnonymousAccount();
             }
@@ -931,7 +934,9 @@ class Services_Amazon_S3_Stream
             // Various options
             if (isset($this->_options['http_options'])) {
                 $this->_s3->httpOptions = array_merge(
-                    $this->_s3->httpOptions, $this->_options['http_options']);
+                    $this->_s3->httpOptions,
+                    $this->_options['http_options']
+                );
             }
             if (isset($this->_options['use_ssl'])) {
                 $this->_s3->useSSL = (bool) $this->_options['use_ssl'];

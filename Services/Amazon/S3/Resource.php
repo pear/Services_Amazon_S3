@@ -43,7 +43,7 @@
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -61,7 +61,7 @@ require_once 'Services/Amazon/S3.php';
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   @release-version@
+ * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 abstract class Services_Amazon_S3_Resource
@@ -122,10 +122,12 @@ abstract class Services_Amazon_S3_Resource
     public function getSignedUrl($ttl, $subResource = false)
     {
         $expires   = time() + $ttl;
-        $signature = $this->s3->getRequestSignature(HTTP_Request2::METHOD_GET,
-                                                    $this,
-                                                    $subResource,
-                                                    array('date' => $expires));
+        $signature = $this->s3->getRequestSignature(
+            HTTP_Request2::METHOD_GET,
+            $this,
+            $subResource,
+            array('date' => $expires)
+        );
         return $this->getURL() .
             ($subResource ? $subResource . '&' : '?') .
             'AWSAccessKeyId=' . rawurlencode($this->s3->accessKeyId) .
@@ -166,8 +168,12 @@ abstract class Services_Amazon_S3_Resource
      */
     public function delete()
     {
-        $response = $this->s3->sendRequest($this, false, null,
-                                          HTTP_Request2::METHOD_DELETE);
+        $response = $this->s3->sendRequest(
+            $this,
+            false,
+            null,
+            HTTP_Request2::METHOD_DELETE
+        );
         if ($response->getStatus() != 204) {
             throw new Services_Amazon_S3_Exception($response);
         }

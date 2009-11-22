@@ -43,7 +43,7 @@
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -61,7 +61,7 @@ require_once 'Services/Amazon/S3.php';
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   @release-version@
+ * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
@@ -171,10 +171,10 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         // - contain only letters, digits, periods, dashes and underscores.
         // - start with a number or letter.
         // - not be in IP address style (e.g., "192.168.5.4").
-        if (!preg_match('/^(?=[a-z0-9])[a-z0-9._-]{3,255}(?<!\-)$/i',
-                        $this->name)
-            || ip2long($this->name)) {
-
+        $exp = '/^(?=[a-z0-9])[a-z0-9._-]{3,255}(?<!\-)$/i';
+        if (   preg_match($exp, $this->name) === 0
+            || ip2long($this->name)
+        ) {
             throw new Services_Amazon_S3_Exception(
                 'Invalid bucket name: ' . $this->name);
         }
@@ -260,8 +260,12 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     public function load()
     {
         try {
-            $this->s3->sendRequest($this, false, null,
-                                   HTTP_Request2::METHOD_HEAD);
+            $this->s3->sendRequest(
+                $this,
+                false,
+                null,
+                HTTP_Request2::METHOD_HEAD
+            );
             $this->exists = true;
         } catch (Services_Amazon_S3_NotFoundException $e) {
             // Trying to load an non-existing bucket should not trigger an
@@ -291,23 +295,32 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         }
         if (!$this->exists) {
             if ($this->locationConstraint) {
-                $body =  '<?xml version="1.0" encoding="ISO-8859-1"?' . '>' .
-                         '<CreateBucketConfiguration' .
-                         ' xmlns="http://s3.amazonaws.com/doc/2006-03-01/">' .
-                          '<LocationConstraint>' .
-                            htmlspecialchars($this->locationConstraint) .
-                          '</LocationConstraint>' .
+                $body = '<?xml version="1.0" encoding="ISO-8859-1"?' . '>' .
+                        '<CreateBucketConfiguration' .
+                        ' xmlns="http://s3.amazonaws.com/doc/2006-03-01/">' .
+                        '<LocationConstraint>' .
+                        htmlspecialchars($this->locationConstraint) .
+                        '</LocationConstraint>' .
                         '</CreateBucketConfiguration>';
             } else {
                 $body = '';
             }
-            $response = $this->s3->sendRequest($this, false, null,
-                                              HTTP_Request2::METHOD_PUT,
-                                              $headers, $body);
-
+            $response = $this->s3->sendRequest(
+                $this,
+                false,
+                null,
+                HTTP_Request2::METHOD_PUT,
+                $headers,
+                $body
+            );
         } elseif (is_string($this->acl)) {
-            $this->s3->sendRequest($this, '?acl', null,
-                                   HTTP_Request2::METHOD_PUT, $headers);
+            $this->s3->sendRequest(
+                $this,
+                '?acl',
+                null,
+                HTTP_Request2::METHOD_PUT,
+                $headers
+            );
         }
 
         if ($this->acl instanceof Services_Amazon_S3_AccessControlList) {

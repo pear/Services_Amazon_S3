@@ -42,7 +42,7 @@
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://docs.amazonwebservices.com/AmazonS3/2006-03-01/RESTAccessPolicy.html
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
@@ -77,7 +77,7 @@ require_once 'PEAR/Exception.php';
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   @release-version@
+ * @version   Release: @release-version@
  * @link      http://docs.amazonwebservices.com/AmazonS3/2006-03-01/S3_ACLs.html
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
@@ -165,8 +165,8 @@ class Services_Amazon_S3_AccessControlList
      * URI for the group containing all users who has authenticated using an
      * Amazon S3 access key.
      */
-    const URI_AUTHENTICATED_USERS =
-        'http://acs.amazonaws.com/groups/global/AuthenticatedUsers';
+    const URI_AUTHENTICATED_USERS
+        = 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers';
 
     /**
      * Canonical user id of the anonymous/unauthenticated user.
@@ -256,12 +256,18 @@ class Services_Amazon_S3_AccessControlList
         if ($implied && $grantee['type'] == self::TYPE_CANONICAL_USER) {
             if ($grantee['ID'] != self::ID_ANONYMOUS) {
                 $permissions |= $this->getPermissions(
-                    array('type' => self::TYPE_GROUP,
-                          'URI'  => self::URI_AUTHENTICATED_USERS));
+                    array(
+                        'type' => self::TYPE_GROUP,
+                        'URI'  => self::URI_AUTHENTICATED_USERS
+                    )
+                );
             }
             $permissions |= $this->getPermissions(
-                array('type' => self::TYPE_GROUP,
-                      'URI'  => self::URI_ALL_USERS));
+                array(
+                    'type' => self::TYPE_GROUP,
+                    'URI'  => self::URI_ALL_USERS
+                )
+            );
         }
         return $permissions;
     }
@@ -337,9 +343,11 @@ class Services_Amazon_S3_AccessControlList
         $xPath    = Services_Amazon_S3::getDOMXPath($response);
 
         $this->ownerId = $xPath->evaluate(
-            'string(/s3:AccessControlPolicy/s3:Owner/s3:ID)');
-        $nlGrants      = $xPath->evaluate(
-            '/s3:AccessControlPolicy/s3:AccessControlList/s3:Grant');
+            'string(/s3:AccessControlPolicy/s3:Owner/s3:ID)'
+        );
+        $nlGrants = $xPath->evaluate(
+            '/s3:AccessControlPolicy/s3:AccessControlList/s3:Grant'
+        );
 
         $this->_grantees = array();
         foreach ($nlGrants as $elGrant) {
@@ -396,17 +404,26 @@ class Services_Amazon_S3_AccessControlList
     public function save()
     {
         $doc   = new DOMDocument();
-        $elACP = $doc->createElementNS(Services_Amazon_S3::NS_S3,
-                                        'AccessControlPolicy');
+        $elACP = $doc->createElementNS(
+            Services_Amazon_S3::NS_S3,
+            'AccessControlPolicy'
+        );
         $doc->appendChild($elACP);
 
         $elOwner = $doc->createElementNS(Services_Amazon_S3::NS_S3, 'Owner');
-        $elOwner->appendChild($doc->createElementNS(Services_Amazon_S3::NS_S3,
-                                                    'ID', $this->ownerId));
+        $elOwner->appendChild(
+            $doc->createElementNS(
+                Services_Amazon_S3::NS_S3,
+                'ID',
+                $this->ownerId
+            )
+        );
         $elACP->appendChild($elOwner);
 
-        $elACL = $doc->createElementNS(Services_Amazon_S3::NS_S3,
-                                       'AccessControlList');
+        $elACL = $doc->createElementNS(
+            Services_Amazon_S3::NS_S3,
+            'AccessControlList'
+        );
         $elACP->appendChild($elACL);
 
         foreach ($this->_grantees as $grantee) {
@@ -420,37 +437,68 @@ class Services_Amazon_S3_AccessControlList
                     $permission ^= $flag;
 
                     $elGrant   = $doc->createElementNS(
-                        Services_Amazon_S3::NS_S3, 'Grant');
+                        Services_Amazon_S3::NS_S3,
+                        'Grant'
+                    );
                     $elGrantee = $doc->createElementNS(
-                        Services_Amazon_S3::NS_S3, 'Grantee');
+                        Services_Amazon_S3::NS_S3,
+                        'Grantee'
+                    );
                     $elGrant->appendChild($elGrantee);
-                    $elGrantee->setAttributeNS(Services_Amazon_S3::NS_XSI,
-                                               'xsi:type', $grantee['type']);
+                    $elGrantee->setAttributeNS(
+                        Services_Amazon_S3::NS_XSI,
+                        'xsi:type',
+                        $grantee['type']
+                    );
                     switch ($grantee['type']) {
                     case self::TYPE_CANONICAL_USER:
-                        $elGrantee->appendChild($doc->createElementNS(
-                            Services_Amazon_S3::NS_S3, 'ID', $grantee['ID']));
+                        $elGrantee->appendChild(
+                            $doc->createElementNS(
+                                Services_Amazon_S3::NS_S3,
+                                'ID',
+                                $grantee['ID']
+                            )
+                        );
                         break;
                     case self::TYPE_AMAZON_CUSTOMER_BY_EMAIL:
-                        $elGrantee->appendChild($doc->createElementNS(
-                            Services_Amazon_S3::NS_S3, 'EmailAddress',
-                            $grantee['emailAddress']));
+                        $elGrantee->appendChild(
+                            $doc->createElementNS(
+                                Services_Amazon_S3::NS_S3,
+                                'EmailAddress',
+                                $grantee['emailAddress']
+                            )
+                        );
                         break;
                     case self::TYPE_GROUP:
-                        $elGrantee->appendChild($doc->createElementNS(
-                            Services_Amazon_S3::NS_S3, 'URI', $grantee['URI']));
+                        $elGrantee->appendChild(
+                            $doc->createElementNS(
+                                Services_Amazon_S3::NS_S3,
+                                'URI',
+                                $grantee['URI']
+                            )
+                        );
                         break;
                     }
-                    $elGrant->appendChild($doc->createElementNS(
-                        Services_Amazon_S3::NS_S3, 'Permission', $string));
+                    $elGrant->appendChild(
+                        $doc->createElementNS(
+                            Services_Amazon_S3::NS_S3,
+                            'Permission',
+                            $string
+                        )
+                    );
                     $elACL->appendChild($elGrant);
                 }
             }
         }
         $headers = array('content-type' => 'application/xml');
-        $this->resource->s3->sendRequest($this->resource, '?acl', null,
-                                         HTTP_Request2::METHOD_PUT, $headers,
-                                         $doc->saveXML());
+        $this->resource->s3->sendRequest(
+            $this->resource,
+            '?acl',
+            null,
+            HTTP_Request2::METHOD_PUT,
+            $headers,
+            $doc->saveXML()
+        );
     }
 
     // }}}

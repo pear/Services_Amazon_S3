@@ -43,7 +43,7 @@
  * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  * @link      https://s3.amazonaws.com/
  * @link      http://docs.amazonwebservices.com/AmazonS3/2006-03-01/
@@ -120,7 +120,7 @@ require_once 'Services/Amazon/S3/ServerErrorException.php';
  * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   Release @release-version@
+ * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 class Services_Amazon_S3
@@ -171,8 +171,8 @@ class Services_Amazon_S3
      * @see Services_Amazon_S3_Resource_Bucket::$requestStyle
      * @link http://docs.amazonwebservices.com/AmazonS3/2006-03-01/VirtualHosting.html
      */
-    public $requestStyle =
-        Services_Amazon_S3_Resource_Bucket::REQUEST_STYLE_VIRTUAL_HOST;
+    public $requestStyle
+        = Services_Amazon_S3_Resource_Bucket::REQUEST_STYLE_VIRTUAL_HOST;
 
     /**
      * The hostname of the endpoint used for requests done by this class and
@@ -310,8 +310,10 @@ class Services_Amazon_S3
     /**
      * Returns the buckets owned by the current user.
      *
-     * @return Traversable  traversable collection of Services_Amazon_S3_Resource_Bucket
-     *                      instances
+     * @return Traversable a traversable collection of
+     *                     {@link Services_Amazon_S3_Resource_Bucket}
+     *                     instances.
+     *
      * @throws Services_Amazon_S3_Exception
      */
     public function getBuckets()
@@ -365,11 +367,15 @@ class Services_Amazon_S3
      * @return string
      *
      * @throws Services_Amazon_S3_Exception
+     *
      * @link http://docs.amazonwebservices.com/AmazonS3/2006-03-01/RESTAuthentication.html
      */
-    public function getRequestSignature($method, $resource,
-                                        $subResource, $headers)
-    {
+    public function getRequestSignature(
+        $method,
+        $resource,
+        $subResource,
+        $headers
+    ) {
         $stringToSign = $method . "\n" .
             (isset($headers['content-md5']) ? $headers['content-md5'] : '') .
             "\n" .
@@ -455,20 +461,25 @@ class Services_Amazon_S3
      *
      * @throws Services_Amazon_S3_Exception
      */
-    public function sendRequest($resource,
-                                $subResource = false,
-                                $query = null,
-                                $method = HTTP_Request2::METHOD_GET,
-                                array $headers = array(),
-                                $body = false)
-    {
+    public function sendRequest(
+        $resource,
+        $subResource = false,
+        $query = null,
+        $method = HTTP_Request2::METHOD_GET,
+        array $headers = array(),
+        $body = false
+    ) {
         $headers['date'] = gmdate(DATE_RFC1123);
 
         // Sign request, unless this is an anonymous account
         if ($this->accessKeyId) {
             $headers['authorization'] = 'AWS ' . $this->accessKeyId . ':' .
-                $this->getRequestSignature($method, $resource,
-                                           $subResource, $headers);
+                $this->getRequestSignature(
+                    $method,
+                    $resource,
+                    $subResource,
+                    $headers
+                );
 
         }
 
@@ -518,11 +529,17 @@ class Services_Amazon_S3
                 // temporary fix is to change /etc/hosts or similar on the local
                 // machine (or change this method to retry the call on the
                 // specified endpoint).
-                $message = $xPath->evaluate('concat(string(/Error/Message),
-                                                    " Endpoint: ",
-                                                    string(/Error/Endpoint))');
+                $message = $xPath->evaluate(
+                    'concat(' .
+                    '    string(/Error/Message),' .
+                    '    " Endpoint: ",' .
+                    '    string(/Error/Endpoint)' .
+                    ')'
+                );
 
-                throw new Services_Amazon_S3_Exception($message ? $message : $response);
+                throw new Services_Amazon_S3_Exception(
+                    $message ? $message : $response
+                );
             } elseif ($response->getStatus() == 403
                       && $method == HTTP_Request2::METHOD_GET
             ) {

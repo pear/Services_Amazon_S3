@@ -43,7 +43,7 @@
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -61,7 +61,7 @@ require_once 'Services/Amazon/S3.php';
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   @release-version@
+ * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
@@ -314,9 +314,14 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
             $headers['x-amz-acl'] = $this->acl;
         }
 
-        $response = $this->s3->sendRequest($this, false, null,
-                                          HTTP_Request2::METHOD_PUT,
-                                          $headers, $this->data);
+        $response = $this->s3->sendRequest(
+            $this,
+            false,
+            null,
+            HTTP_Request2::METHOD_PUT,
+            $headers,
+            $this->data
+        );
 
         $this->eTag = trim($response->getHeader('etag'), '"');
         if ($this->acl instanceof Services_Amazon_S3_AccessControlList) {
@@ -330,8 +335,8 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
     /**
      * Copies data to this object from another S3 object
      *
-     * @param Services_Amazon_S3_Resource_Object $source the object from which
-     *        to copy.
+     * @param Services_Amazon_S3_Resource_Object $source       the object from
+     *        which to copy.
      * @param boolean                            $copyMetadata optional. Whether
      *        or not to copy the metadata from the <kbd>$source</kbd> or replace
      *        it with the metadata specified in this object. If true, the meta-
@@ -419,8 +424,8 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
     /**
      * Copies data from this object to another S3 object
      *
-     * @param Services_Amazon_S3_Resource_Object $target the object to which
-     *        this object is copied.
+     * @param Services_Amazon_S3_Resource_Object $target       the object to
+     *        which this object is copied.
      * @param boolean                            $copyMetadata optional. Whether
      *        or not to copy the metadata to the <kbd>$target</kbd> or use the
      *        metadata specified on this target. If true, the metadata is

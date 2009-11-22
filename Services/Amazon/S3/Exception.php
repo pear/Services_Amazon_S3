@@ -42,7 +42,7 @@
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -60,7 +60,7 @@ require_once 'PEAR/Exception.php';
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   @release-version@
+ * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 class Services_Amazon_S3_Exception extends PEAR_Exception
@@ -99,7 +99,7 @@ class Services_Amazon_S3_Exception extends PEAR_Exception
      * @param string|HTTP_Request $messageOrResponse a string (UTF-8) describing
      *                                               the error, or the
      *                                               HTTP_Request2_Response that
-	 *                                               caused the exception.
+     *                                               caused the exception.
      * @param int                 $code              the error code.
      */
     public function __construct($messageOrResponse, $code = 0)
@@ -108,19 +108,21 @@ class Services_Amazon_S3_Exception extends PEAR_Exception
         if ($messageOrResponse instanceof HTTP_Request2_Response) {
             $this->response = $messageOrResponse;
             $contentType   = $this->response->getHeader('content-type');
-            if ($contentType == 'application/xml' &&
-                $this->response->getBody()) {
-
+            if (   $contentType == 'application/xml'
+                && $this->response->getBody()
+            ) {
                 $prevUseInternalErrors = libxml_use_internal_errors(true);
                 $doc = new DOMDocument();
                 $ok = $doc->loadXML($this->response->getBody());
                 libxml_use_internal_errors($prevUseInternalErrors);
                 if ($ok) {
                     $xPath = new DOMXPath($doc);
-                    $this->_amazonErrorCode =
-                        $xPath->evaluate('string(/Error/Code)');
-                    $message               =
-                        $xPath->evaluate('string(/Error/Message)');
+                    $this->_amazonErrorCode = $xPath->evaluate(
+                        'string(/Error/Code)'
+                    );
+                    $message = $xPath->evaluate(
+                        'string(/Error/Message)'
+                    );
                 }
             }
 

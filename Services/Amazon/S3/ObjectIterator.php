@@ -42,7 +42,7 @@
  * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -61,7 +61,7 @@ require_once 'Services/Amazon/S3.php';
  * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   @release-version@
+ * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  * @see       Services_Amazon_S3_Resource_Bucket::getObjects()
  */
@@ -271,10 +271,10 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
      */
     public function next()
     {
-        if (!isset($this->_nodeList) ||
-            ++$this->_currentIndex >= $this->_nodeList->length &&
-            $this->_isTruncated) {
-
+        if (   !isset($this->_nodeList)
+            || ++$this->_currentIndex >= $this->_nodeList->length
+            && $this->_isTruncated
+        ) {
             $this->_sendRequest();
         }
 
@@ -286,8 +286,12 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
         }
 
         if ($node->localName == 'Contents') {
-            $key    = $this->_xPath->evaluate('string(s3:Key)', $node);
-            $object = new Services_Amazon_S3_Resource_Object($this->bucket, $key);
+            $key = $this->_xPath->evaluate('string(s3:Key)', $node);
+
+            $object = new Services_Amazon_S3_Resource_Object(
+                $this->bucket,
+                $key
+            );
 
             // Initialize properties present in the returned XML.
             $object->size = $this->_xPath->evaluate('string(s3:Size)', $node);
@@ -295,16 +299,22 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
                 $this->_xPath->evaluate('string(s3:ETag)', $node),
                 '"'
             );
-            $lastModified =
-                $this->_xPath->evaluate('string(s3:LastModified)', $node);
+            $lastModified = $this->_xPath->evaluate(
+                'string(s3:LastModified)',
+                $node
+            );
             $object->lastModified = strtotime($lastModified);
 
             $this->_current = $object;
         } else {
             include_once 'Services/Amazon/S3/Prefix.php';
             // $node is a text node
-            $prefix        = $node->data;
-            $this->_current = new Services_Amazon_S3_Prefix($this->bucket, $prefix);
+            $prefix = $node->data;
+
+            $this->_current = new Services_Amazon_S3_Prefix(
+                $this->bucket,
+                $prefix
+            );
         }
     }
 
@@ -337,19 +347,23 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
 
         $response = $this->bucket->s3->sendRequest($this->bucket, '', $query);
 
-        $this->_xPath        = Services_Amazon_S3::getDOMXPath($response);
-        $this->_nodeList     = $this->_xPath->evaluate(
-            '/s3:ListBucketResult/s3:Contents |
-             /s3:ListBucketResult/s3:CommonPrefixes/s3:Prefix/text()');
-        $this->_isTruncated  = $this->_xPath->evaluate(
-            'string(/s3:ListBucketResult/s3:IsTruncated) = "true"');
+        $this->_xPath    = Services_Amazon_S3::getDOMXPath($response);
+        $this->_nodeList = $this->_xPath->evaluate(
+            '/s3:ListBucketResult/s3:Contents | ' .
+            '/s3:ListBucketResult/s3:CommonPrefixes/s3:Prefix/text()'
+        );
+        $this->_isTruncated = $this->_xPath->evaluate(
+            'string(/s3:ListBucketResult/s3:IsTruncated) = "true"'
+        );
         // <NextMarker> is only present when a delimiter is specified.
         if ($this->delimiter) {
             $this->_nextMarker = $this->_xPath->evaluate(
-                'string(/s3:ListBucketResult/s3:NextMarker)');
+                'string(/s3:ListBucketResult/s3:NextMarker)'
+            );
         } else {
             $this->_nextMarker = $this->_xPath->evaluate(
-                'string(/s3:ListBucketResult/s3:Contents[last()]/s3:Key)');
+                'string(/s3:ListBucketResult/s3:Contents[last()]/s3:Key)'
+            );
         }
         $this->_currentIndex = 0;
     }
