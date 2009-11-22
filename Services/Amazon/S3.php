@@ -149,20 +149,12 @@ class Services_Amazon_S3
     public $secretAccessKey;
 
     /**
-     * Options for HTTP_Request, e.g. proxy server, timeout etc.
-     * NOTE: Some options may interfere with this service.
-     * @var array  options array for HTTP_Request.
-     * @see HTTP_Request::HTTP_Request()
-     */
-    public $httpOptions = array('allowRedirects' => true);
-
-    /**
-     * Options for HTTP_Request2, e.g. proxy server, timeout etc.
-     * NOTE: Some options may interfere with this service.
-     * @var array  options array for HTTP_Request.
+     * Configuration parameters for HTTP_Request2, e.g. proxy server,
+     * timeout etc. NOTE: Some options may interfere with this service.
+     * @var array  configuration array for HTTP_Request2.
      * @see HTTP_Request2::HTTP_Request2()
      */
-    public $httpConfig = array();
+    public $httpConfig = array('follow_redirects' => true);
 
     /**
      * The default method for accessing buckets. This value may be specified
