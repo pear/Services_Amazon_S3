@@ -125,5 +125,20 @@ Features:
    <state>alpha</state>
    <notes>First alpha release.</notes>
   </release>
+  <release>
+   <release>0.2.0</release>
+   <date>2009-05-01</date>
+   <license>BSD</license>
+   <state>alpha</state>
+   <notes>* Fix Bug #15732: Files get truncated when mbstring overloading is enabled
+* Fix Bug #15312: Warning in getSignedUrl()
+* Fix missing require_once of ServerErrorException.php
+* Make getSignedUrl() available for buckets as well
+* Stream wrapper option "default_acl" renamed to "acl" ("default_acl" is also supported in this release for backwards compatibility - bug #15893)
+* Implement Request #15240: Add ability to set content headers for new objects created via streams
+* Preserve ACL in rename() and actually delete the source, i.e. move not copy
+* Make Services_Amazon_S3_Resource_Bucket::getURL() throw exception if bucket name is valid for current request style
+</notes>
+  </release>
  </changelog>
 </package>
