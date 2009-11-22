@@ -57,9 +57,11 @@ $api_state       = 'alpha';
 $release_version = '0.3.0';
 $release_state   = 'alpha';
 $release_notes   =
-    " * Implemented Req #15239. Use HTTP_Request2. This allows for better " .
-    "   forwards-compatibility with PHP.\n" .
-    " * Implemented Req #14751. Add S3 object copy method.\n";
+    " * Implemented Request #15239. Use HTTP_Request2. This allows for " .
+    "   better forwards-compatibility with PHP.\n" .
+    " * Implemented Request #14751. Add S3 object copy method.\n" .
+    " * Implemented Request #16517. Make object iterator populate the eTag, " .
+    "   lastModified and size properties.\n";
 
 $description =
     "This package provides an object-oriented interface to the Amazon " .

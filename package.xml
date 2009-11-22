@@ -1,98 +1,80 @@
-<?xml version="1.0"?>
-<package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0"
-    xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
-                        http://pear.php.net/dtd/tasks-1.0.xsd
-                        http://pear.php.net/dtd/package-2.0
-                        http://pear.php.net/dtd/package-2.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.0" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+    http://pear.php.net/dtd/tasks-1.0.xsd
+    http://pear.php.net/dtd/package-2.0
+    http://pear.php.net/dtd/package-2.0.xsd">
  <name>Services_Amazon_S3</name>
  <channel>pear.php.net</channel>
- <summary>PHP interface to Amazon S3's API</summary>
- <description>Services_Amazon_S3 is a PHP library for accessing Amazon Simple Storage Service (S3). The library is based on the 2006-03-01 REST API.
+ <summary>PHP API for Amazon S3 (Simple Storage Service)</summary>
+ <description>This package provides an object-oriented interface to the Amazon Simple Storage Service (S3). This package is based on the 2006-03-01 REST API.
 
 Features:
- * list, create and delete buckets, including buckets with location constraints (European buckets)
- * create, read and delete objects including metadata
- * list keys in a bucket using an SPL Iterator with support for paging, key prefixes and delimiters
- * manipulate access control lists for buckets and objects
- * specify the request style (virtualhost, cname, path style) and endpoint
- * get signed URLs to allow a trusted third party to access private files
- * access buckets and objects using PHP filesystem functions through a stream wrapper</description>
+
+ 1. List, create and delete buckets, including buckets with location     constraints (European buckets).
+ 2. Create, read and delete objects including metadata.
+ 3. List keys in a bucket using an SPL Iterator with support for     paging, key prefixes and delimiters.
+ 4. Manipulate access control lists for buckets and objects.
+ 5. Specify the request style (virtualhost, cname, path style) and     endpoint.
+ 6. Get signed URLs to allow a trusted third party to access private     files.
+ 7. Access buckets and objects using PHP filesystem functions through     a stream wrapper
+ </description>
  <lead>
   <name>Christian Schmidt</name>
   <user>schmidt</user>
   <email>chsc@peytz.dk</email>
   <active>yes</active>
  </lead>
- <date>2009-05-01</date>
+ <lead>
+  <name>Mike Gauthier</name>
+  <user>gauthierm</user>
+  <email>mike@silverorange.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2009-11-22</date>
+ <time>03:07:44</time>
  <version>
-  <release>0.2.0</release>
-  <api>0.2.0</api>
+  <release>0.3.0</release>
+  <api>0.3.0</api>
  </version>
  <stability>
   <release>alpha</release>
   <api>alpha</api>
  </stability>
- <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
- <notes>* Fix Bug #15732: Files get truncated when mbstring overloading is enabled
-* Fix Bug #15312: Warning in getSignedUrl()
-* Fix missing require_once of ServerErrorException.php
-* Make getSignedUrl() available for buckets as well
-* Stream wrapper option "default_acl" renamed to "acl" ("default_acl" is also supported in this release for backwards compatibility - bug #15893)
-* Implement Request #15240: Add ability to set content headers for new objects created via streams
-* Preserve ACL in rename() and actually delete the source, i.e. move not copy
-* Make Services_Amazon_S3_Resource_Bucket::getURL() throw exception if bucket name is valid for current request style
-</notes>
+ <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+ <notes>
+* Implemented Request #15239. Use HTTP_Request2. This allows for    better forwards-compatibility with PHP.
+ * Implemented Request #14751. Add S3 object copy method.
+ * Implemented Request #16517. Make object iterator populate the eTag,    lastModified and size properties.
+ </notes>
  <contents>
-  <dir name="/" baseinstalldir="Services/Amazon">
-   <file name="S3.php" role="php">
-    <tasks:replace from="@package_version@" to="version" type="package-info"/>
-   </file>
-   <dir name="S3">
-    <file name="AccessControlList.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <file name="AccessDeniedException.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <file name="Exception.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <file name="NotFoundException.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <file name="ObjectIterator.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <file name="Prefix.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <file name="Resource.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <file name="ServerErrorException.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <file name="Stream.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info"/>
-    </file>
-    <dir name="Resource">
-     <file name="Object.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info"/>
-     </file>
-     <file name="Bucket.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info"/>
-     </file>
-    </dir>
-   </dir>
+  <dir baseinstalldir="/" name="/">
+   <dir name="Services">
+    <dir name="Amazon">
+     <dir name="S3">
+      <dir name="Resource">
+       <file name="Bucket.php" role="php" />
+       <file name="Object.php" role="php" />
+      </dir> <!-- /Services/Amazon/S3/Resource -->
+      <file name="AccessControlList.php" role="php" />
+      <file name="AccessDeniedException.php" role="php" />
+      <file name="Exception.php" role="php" />
+      <file name="NotFoundException.php" role="php" />
+      <file name="ObjectIterator.php" role="php" />
+      <file name="Prefix.php" role="php" />
+      <file name="Resource.php" role="php" />
+      <file name="ServerErrorException.php" role="php" />
+      <file name="Stream.php" role="php" />
+     </dir> <!-- /Services/Amazon/S3 -->
+     <file name="S3.php" role="php" />
+    </dir> <!-- /Services/Amazon -->
+   </dir> <!-- /Services -->
    <dir name="tests">
-    <file name="AllTests.php" role="test"/>
-    <file name="config.php.dist" role="test"/>
-    <file name="StreamTest.php" role="test"/>
-    <file name="Test.php" role="test"/>
-   </dir>
-  </dir>
+    <file name="AllTests.php" role="test" />
+    <file name="config.php.dist" role="test" />
+    <file name="StreamTest.php" role="test" />
+    <file name="Test.php" role="test" />
+   </dir> <!-- /tests -->
+  </dir> <!-- / -->
  </contents>
  <dependencies>
   <required>
@@ -103,42 +85,42 @@ Features:
     <min>1.4.0a7</min>
    </pearinstaller>
    <package>
-    <name>Crypt_HMAC</name>
+    <name>PEAR</name>
     <channel>pear.php.net</channel>
    </package>
    <package>
-    <name>HTTP_Request</name>
+    <name>Crypt_HMAC2</name>
     <channel>pear.php.net</channel>
-    <min>1.4.0</min>
+    <min>0.2.1</min>
+   </package>
+   <package>
+    <name>HTTP_Request2</name>
+    <channel>pear.php.net</channel>
+    <min>0.5.1</min>
    </package>
    <extension>
-    <name>SPL</name>
+    <name>spl</name>
    </extension>
   </required>
  </dependencies>
- <phprelease/>
+ <phprelease />
  <changelog>
   <release>
-   <version>0.1.0</version>
-   <date>2008-04-07</date>
-   <license>BSD</license>
-   <state>alpha</state>
-   <notes>First alpha release.</notes>
-  </release>
-  <release>
-   <release>0.2.0</release>
-   <date>2009-05-01</date>
-   <license>BSD</license>
-   <state>alpha</state>
-   <notes>* Fix Bug #15732: Files get truncated when mbstring overloading is enabled
-* Fix Bug #15312: Warning in getSignedUrl()
-* Fix missing require_once of ServerErrorException.php
-* Make getSignedUrl() available for buckets as well
-* Stream wrapper option "default_acl" renamed to "acl" ("default_acl" is also supported in this release for backwards compatibility - bug #15893)
-* Implement Request #15240: Add ability to set content headers for new objects created via streams
-* Preserve ACL in rename() and actually delete the source, i.e. move not copy
-* Make Services_Amazon_S3_Resource_Bucket::getURL() throw exception if bucket name is valid for current request style
-</notes>
+   <version>
+    <release>0.3.0</release>
+    <api>0.3.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2009-11-22</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>
+* Implemented Request #15239. Use HTTP_Request2. This allows for    better forwards-compatibility with PHP.
+ * Implemented Request #14751. Add S3 object copy method.
+ * Implemented Request #16517. Make object iterator populate the eTag,    lastModified and size properties.
+   </notes>
   </release>
  </changelog>
 </package>
