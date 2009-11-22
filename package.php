@@ -44,7 +44,7 @@
  * @author    Michael Gauthier <mike@silverorange.com>
  * @copyright 2009 silverorange
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
