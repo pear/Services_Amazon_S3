@@ -163,7 +163,7 @@ $package->addPackageDepWithChannel(
     'required',
     'HTTP_Request2',
     'pear.php.net',
-    '0.4.1'
+    '0.5.1'
 );
 
 $package->addExtensionDep('required', 'spl');
