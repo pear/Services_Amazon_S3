@@ -1,4 +1,7 @@
 <?php
+
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Services_Amazon_S3_AllTests::main');
 }

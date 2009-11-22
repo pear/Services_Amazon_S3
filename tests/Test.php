@@ -1,11 +1,13 @@
 <?php
 
-if (!defined("PHPUnit_MAIN_METHOD")) {
-    define("PHPUnit_MAIN_METHOD", "Services_Amazon_S3_Test::main");
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
+if (!defined('PHPUnit_MAIN_METHOD')) {
+    define('PHPUnit_MAIN_METHOD', 'Services_Amazon_S3_Test::main');
 }
 
-require_once "PHPUnit/Framework/TestCase.php";
-require_once "PHPUnit/Framework/TestSuite.php";
+require_once 'PHPUnit/Framework/TestCase.php';
+require_once 'PHPUnit/Framework/TestSuite.php';
 
 require_once 'Services/Amazon/S3.php';
 
@@ -38,17 +40,19 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
     /**
      * Runs the test methods of this class.
      */
-    public static function main() {
-        require_once "PHPUnit/TextUI/TestRunner.php";
+    public static function main()
+    {
+        require_once 'PHPUnit/TextUI/TestRunner.php';
 
-        $suite  = new PHPUnit_Framework_TestSuite("Services_Amazon_S3_Test");
+        $suite  = new PHPUnit_Framework_TestSuite('Services_Amazon_S3_Test');
         $result = PHPUnit_TextUI_TestRunner::run($suite);
     }
 
     /**
      * Creates a bucket for testing.
      */
-    protected function setUp() {
+    protected function setUp()
+    {
         // These constants must be set in order to run the tests
         if (!defined('ACCESS_KEY_ID') || !defined('SECRET_ACCESS_KEY')
             || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY
@@ -75,7 +79,8 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
     /**
      * Deletes the test bucket and all objects in it.
      */
-    protected function tearDown() {
+    protected function tearDown()
+    {
         foreach ($this->bucket->getObjects() as $object) {
             $object->delete();
         }
@@ -132,7 +137,7 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
      */
     public function testNotFound()
     {
-        // Non-existing 
+        // Non-existing
         $key        = 'not-found-' . md5(microtime(true));
         $bucketName = 'not-found-' . $this->bucketName;
 
@@ -257,7 +262,8 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
     }
 }
 
-if (PHPUnit_MAIN_METHOD == "Services_Amazon_S3_Test::main") {
+if (PHPUnit_MAIN_METHOD == 'Services_Amazon_S3_Test::main') {
     Services_Amazon_S3_Test::main();
 }
+
 ?>
