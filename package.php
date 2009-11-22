@@ -144,7 +144,8 @@ $package->setPhpDep('5.1.1');
 $package->addPackageDepWithChannel(
     'required',
     'PEAR',
-    'pear.php.net'
+    'pear.php.net',
+    '1.3.2'
 );
 
 $package->addPackageDepWithChannel(
