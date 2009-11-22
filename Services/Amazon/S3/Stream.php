@@ -1,5 +1,7 @@
 <?php
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 /**
  * Services_Amazon_S3_Stream, a stream wrapper for Amazon S3
  *
@@ -14,14 +16,14 @@
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in
- *       the documentation and/or other materials provided with the distribution.
- *     * Neither the name of the PHP_LexerGenerator nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the PHP_LexerGenerator nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -39,8 +41,8 @@
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   CVS: $Id$
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -53,7 +55,7 @@ require_once 'Services/Amazon/S3.php';
  * Services_Amazon_S3_Stream is a stream wrapper for Amazon S3. With this,
  * buckets and objects can be manipulated using the PHP filesystem functions,
  * e.g. fopen(), file_put_contents(), file_exists() etc.
- * 
+ *
  * S3 has no notion of directories but support emulation to some extent using
  * the prefix and delimiter parameters when listing keys in a bucket.
  *
@@ -66,7 +68,7 @@ require_once 'Services/Amazon/S3.php';
  * directly, except for {@link Services_Amazon_S3_Stream::register()}.
  *
  * Various options may be specified using
- * {@link Services_Amazon_S3_Stream::register()} or using a 
+ * {@link Services_Amazon_S3_Stream::register()} or using a
  * {@link http://www.php.net/manual/en/ref.stream.php#stream.contexts PHP
  * stream context}.
  *
@@ -102,12 +104,14 @@ require_once 'Services/Amazon/S3.php';
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   Release: @package_version@
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
- */ 
+ */
 class Services_Amazon_S3_Stream
 {
+    // {{{ class constants
+
     /**
      * Directory with 0777 access - see "man 2 stat".
      */
@@ -118,12 +122,18 @@ class Services_Amazon_S3_Stream
      */
     const MODE_FILE = 0100777;
 
+    // }}}
+    // {{{ public properties
+
     /**
      * If a stream context is specified when creating the stream, this property
      * is set by PHP.
      * @var resource|null
      */
     public $context;
+
+    // }}}
+    // {{{ private properties
 
     /**
      * The S3 account instance currently in use.
@@ -194,11 +204,11 @@ class Services_Amazon_S3_Stream
      */
     private static $_stat = array(
         0         => 0,  // device number
-        'dev'     => 0,   
+        'dev'     => 0,
         1         => 0,  // inode number
         'ino'     => 0,
         2         => 0,  // inode protection mode
-       'mode'     => 0, 
+       'mode'     => 0,
         3         => 0,  // number of links
         'nlink'   => 0,
         4         => 0,  // userid of owner
@@ -216,10 +226,13 @@ class Services_Amazon_S3_Stream
         10        => 0,  // time of last inode change (Unix timestamp)
         'ctime'   => 0,  // time of last inode change (Unix timestamp)
         11        => -1, // blocksize of filesystem IO
-        'blksize' => -1, 
+        'blksize' => -1,
         12        => -1, // number of blocks allocated
         'blocks'  => -1,
-        );
+    );
+
+    // }}}
+    // {{{ register()
 
     /**
      * Register this stream wrapper with the specified prefix and options.
@@ -251,10 +264,13 @@ class Services_Amazon_S3_Stream
         }
     }
 
+    // }}}
+    // {{{ stream_open()
+
     /**
      * Support for fopen(). Also used by file_get_contents() and
      * file_put_contents().
-     * 
+     *
      * @param string $path         the path to open
      * @param string $mode         the file mode ( "r", "wb" etc.)
      * @param int    $options      a bit mask of STREAM_USE_PATH and
@@ -329,6 +345,9 @@ class Services_Amazon_S3_Stream
         return !$error;
     }
 
+    // }}}
+    // {{{ stream_read()
+
     /**
      * Support for fread(), file_get_contents() etc.
      *
@@ -341,6 +360,9 @@ class Services_Amazon_S3_Stream
     {
         return fread($this->_fileHandle, $count);
     }
+
+    // }}}
+    // {{{ stream_write()
 
     /**
      * Support for fwrite(), file_put_contents() etc.
@@ -355,6 +377,9 @@ class Services_Amazon_S3_Stream
         return fwrite($this->_fileHandle, $data);
     }
 
+    // }}}
+    // {{{ stream_eof()
+
     /**
      * Support for feof().
      *
@@ -366,9 +391,12 @@ class Services_Amazon_S3_Stream
         return feof($this->_fileHandle);
     }
 
+    // }}}
+    // {{{ stream_seek()
+
     /**
      * Support for fseek().
-     * 
+     *
      * @param int $offset the byte offset to got to
      * @param int $whence SEEK_SET, SEEK_CUR, or SEEK_END
      *
@@ -379,6 +407,9 @@ class Services_Amazon_S3_Stream
     {
         return fseek($this->_fileHandle, $offset, $whence);
     }
+
+    // }}}
+    // {{{ stream_flush()
 
     /**
      * Support for fflush().
@@ -392,6 +423,9 @@ class Services_Amazon_S3_Stream
         return fflush($this->_fileHandle);
     }
 
+    // }}}
+    // {{{ stream_tell()
+
     /**
      * Support for ftell().
      *
@@ -402,6 +436,9 @@ class Services_Amazon_S3_Stream
     {
         return ftell($this->_fileHandle);
     }
+
+    // }}}
+    // {{{ stream_stat()
 
     /**
      * Support for fstat().
@@ -422,6 +459,9 @@ class Services_Amazon_S3_Stream
         $stat['mode']  = $stat[2]  = $fstat['mode'];
         return $stat;
     }
+
+    // }}}
+    // {{{ stream_close()
 
     /**
      * Support for fclose().
@@ -467,6 +507,9 @@ class Services_Amazon_S3_Stream
         return $ok;
     }
 
+    // }}}
+    // {{{ unlink()
+
     /**
      * Support for unlink().
      *
@@ -502,6 +545,9 @@ class Services_Amazon_S3_Stream
         }
         return true;
     }
+
+    // }}}
+    // {{{ rename()
 
     /**
      * Support for rename(). The renaming isn't atomic as rename() usually is,
@@ -541,6 +587,9 @@ class Services_Amazon_S3_Stream
         }
         return true;
     }
+
+    // }}}
+    // {{{ mkdir()
 
     /**
      * Support for mkdir().
@@ -588,6 +637,9 @@ class Services_Amazon_S3_Stream
         }
     }
 
+    // }}}
+    // {{{ rmdir()
+
     /**
      * Support for rmdir().
      *
@@ -627,6 +679,9 @@ class Services_Amazon_S3_Stream
             return true;
         }
     }
+
+    // }}}
+    // {{{ stat()
 
     /**
      * Support for stat().
@@ -683,6 +738,9 @@ class Services_Amazon_S3_Stream
         return $stat;
     }
 
+    // }}}
+    // {{{ dir_opendir()
+
     /**
      * Support for opendir().
      *
@@ -708,7 +766,7 @@ class Services_Amazon_S3_Stream
         }
 
         try {
-            $resourceIterator->rewind(); 
+            $resourceIterator->rewind();
         } catch (Services_Amazon_S3_Exception $e) {
             // Bucket does not exist or a communication error
             return false;
@@ -735,6 +793,9 @@ class Services_Amazon_S3_Stream
         }
         return true;
     }
+
+    // }}}
+    // {{{ dir_readdir()
 
     /**
      * Support for readdir().
@@ -786,6 +847,9 @@ class Services_Amazon_S3_Stream
         return false;
     }
 
+    // }}}
+    // {{{ dir_rewinddir()
+
     /**
      * Support for rewinddir().
      *
@@ -804,6 +868,9 @@ class Services_Amazon_S3_Stream
         return true;
     }
 
+    // }}}
+    // {{{ dir_closedir()
+
     /**
      * Support for closedir().
      *
@@ -815,6 +882,9 @@ class Services_Amazon_S3_Stream
         unset($this->_directoryIterator);
         return true;
     }
+
+    // }}}
+    // {{{ _parsePath()
 
     /**
      * Breaks a path "s3://mybucket/foo/bar.gif" into a bucket name "mybucket"
@@ -888,6 +958,9 @@ class Services_Amazon_S3_Stream
         return array($bucketName, $key);
     }
 
+    // }}}
+    // {{{ _isPrefix()
+
     /**
      * Returns whether there are objects in $this->_bucket whose keys begin
      * with $this->_prefix.
@@ -899,9 +972,11 @@ class Services_Amazon_S3_Stream
         // Save resources by fetching only one key
         $objectIterator = $this->_bucket->getObjects($this->_prefix, '/');
         $objectIterator->maxKeys = 1;
-        $objectIterator->rewind(); 
+        $objectIterator->rewind();
         return $objectIterator->valid();
     }
+
+    // }}}
 }
 
 ?>

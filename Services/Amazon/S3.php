@@ -17,14 +17,14 @@
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in
- *       the documentation and/or other materials provided with the distribution.
- *     * Neither the name of the PHP_LexerGenerator nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the PHP_LexerGenerator nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -42,8 +42,8 @@
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   CVS: $Id$
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  * @link      https://s3.amazonaws.com/
  * @link      http://docs.amazonwebservices.com/AmazonS3/2006-03-01/
@@ -83,7 +83,7 @@ require_once 'Services/Amazon/S3/ServerErrorException.php';
  * except that it cannot contain subdirectories.
  * <code>
  * foreach ($s3->getBuckets() as $bucket) {
- *     print "<li>" . htmlspecialchars($bucket->name) . "</li>";
+ *     print '<li>' . htmlspecialchars($bucket->name) . '</li>';
  * }
  * </code>
  *
@@ -92,10 +92,10 @@ require_once 'Services/Amazon/S3/ServerErrorException.php';
  * $bucket = $s3->getBucket('foobar');
  * </code>
  *
- * Iterator over the objects (files) in a bucket:
+ * Iterate over the objects (files) in a bucket:
  * <code>
  * foreach ($bucket->getObjects() as $object) {
- *     print "<li>" . htmlspecialchars($object->key) . "</li>";
+ *     print '<li>' . htmlspecialchars($object->key) . '</li>';
  * }
  * </code>
  *
@@ -119,12 +119,14 @@ require_once 'Services/Amazon/S3/ServerErrorException.php';
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   Release: @package_version@
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   Release @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 class Services_Amazon_S3
 {
+    // {{{ class constants
+
     /**
      * Namespace URI used in XML.
      */
@@ -134,6 +136,9 @@ class Services_Amazon_S3
      * Namespace URI for XML schema instances.
      */
     const NS_XSI = 'http://www.w3.org/2001/XMLSchema-instance';
+
+    // }}}
+    // {{{ public properties
 
     /**
      * Amazon Web Services Access Key ID.
@@ -189,7 +194,7 @@ class Services_Amazon_S3
      * Maximum number of keys to fetch per request when iterating over the
      * objects of a bucket. A low value will result in more requests to the
      * serve. This value may be specified on the iterator using
-     * $iterator->maxKeys.
+     * <kbd>$iterator->maxKeys</kbd>.
      * @var int|false  a positive integer, or false to let the server decide
      *                 the limit
      * @see Services_Amazon_S3_ObjectIterator::$maxKeys
@@ -203,10 +208,20 @@ class Services_Amazon_S3
      */
     public $maxRetries = 2;
 
+    // }}}
+    // {{{ protected properties
+
     /**
+     * Object used to make HTTP requests for the S3 REST API.
+     *
      * @var HTTP_Request2
+     *
+     * @see Services_Amazon_S3::setRequest()
      */
     protected $request = null;
+
+    // }}}
+    // {{{ __construct()
 
     /**
      * Private constructor. Use Services_Amazon_S3::getService() or
@@ -216,6 +231,9 @@ class Services_Amazon_S3
     {
         $this->request = new HTTP_Request2();
     }
+
+    // }}}
+    // {{{ setRequest()
 
     /**
      * Sets the HTTP request object to use
@@ -230,6 +248,9 @@ class Services_Amazon_S3
     {
         $this->request = $request;
     }
+
+    // }}}
+    // {{{ getAccount()
 
     /**
      * Returns an account instance with the specified credentials. This may
@@ -253,6 +274,9 @@ class Services_Amazon_S3
         return $s3;
     }
 
+    // }}}
+    // {{{ getAnonymousAccount()
+
     /**
      * Returns an unauthorized account instance. This can be used to access
      * resources that have permissions granted to anonymous users.
@@ -267,6 +291,9 @@ class Services_Amazon_S3
         return $s3;
     }
 
+    // }}}
+    // {{{ getURL()
+
     /**
      * Returns the base URL of this resource.
      *
@@ -276,6 +303,9 @@ class Services_Amazon_S3
     {
         return ($this->useSSL ? 'https' : 'http') . '://' . $this->endpoint . '/';
     }
+
+    // }}}
+    // {{{ getBuckets()
 
     /**
      * Returns the buckets owned by the current user.
@@ -299,6 +329,9 @@ class Services_Amazon_S3
         return new ArrayObject($buckets);
     }
 
+    // }}}
+    // {{{ getBucket()
+
     /**
      * Returns the buckets with the specified name.
      *
@@ -310,6 +343,9 @@ class Services_Amazon_S3
     {
         return new Services_Amazon_S3_Resource_Bucket($this, $name);
     }
+
+    // }}}
+    // {{{ getRequestSignature()
 
     /**
      * Signs the specified request with the secret key and returns the request
@@ -371,6 +407,9 @@ class Services_Amazon_S3
 
     }
 
+    // }}}
+    // {{{ signString()
+
     /**
      * Signs the specified string with the secret key.
      *
@@ -394,6 +433,9 @@ class Services_Amazon_S3
         // Amazon wants the signature value base64-encoded
         return base64_encode($signature);
     }
+
+    // }}}
+    // {{{ sendRequest()
 
     /**
      * Sends the specified request to the server. This method is for internal
@@ -512,6 +554,9 @@ class Services_Amazon_S3
         return $response;
     }
 
+    // }}}
+    // {{{ getDOMXPath()
+
     /**
      * Returns a DOMXPath object for the XML document in the body of the
      * specified HTTP response. This method is for internal use only.
@@ -540,6 +585,8 @@ class Services_Amazon_S3
         $xPath->registerNamespace('xsi', self::NS_XSI);
         return $xPath;
     }
+
+    // }}}
 }
 
 ?>

@@ -17,14 +17,14 @@
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in
- *       the documentation and/or other materials provided with the distribution.
- *     * Neither the name of the PHP_LexerGenerator nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the PHP_LexerGenerator nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -42,8 +42,8 @@
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   CVS: $Id$
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -60,12 +60,14 @@ require_once 'Services/Amazon/S3.php';
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   Release: @package_version@
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
- */ 
+ */
 class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
 {
+    // {{{ class constants
+
     /**
      * Load only metadata, not data.
      * @see Services_Amazon_S3_Resource_Object::load()
@@ -77,6 +79,9 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
      * @see Services_Amazon_S3_Resource_Object::load()
      */
     const LOAD_DATA = 1;
+
+    // }}}
+    // {{{ public properties
 
     /**
      * The bucket containing this object.
@@ -157,6 +162,9 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         'cache-control', 'content-md5', 'content-disposition',
         'content-encoding', 'expires');
 
+    // }}}
+    // {{{ __construct()
+
     /**
      * Constructor. This should only be used internally. New object instances
      * should be created using $bucket->getObject($name) or
@@ -174,6 +182,9 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         $this->s3     = $bucket->s3;
     }
 
+    // }}}
+    // {{{ getURL()
+
     /**
      * Returns the URL of this object.
      *
@@ -185,6 +196,9 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         return $this->bucket->getURL() . rawurlencode($this->key);
     }
 
+    // }}}
+    // {{{ getTorrentURL()
+
     /**
      * Returns a URL of a .torrent file for this object.
      *
@@ -195,6 +209,9 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
     {
         return $this->getURL() . '?torrent';
     }
+
+    // }}}
+    // {{{ load()
 
     /**
      * Loads this object from the server.
@@ -243,6 +260,9 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         }
         return true;
     }
+
+    // }}}
+    // {{{ save()
 
     /**
      * Saves this object to the server.
@@ -303,6 +323,9 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
             $this->acl->save();
         }
     }
+
+    // }}}
+    // {{{ copyFrom()
 
     /**
      * Copies data to this object from another S3 object
@@ -390,6 +413,9 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         }
     }
 
+    // }}}
+    // {{{ copyTo()
+
     /**
      * Copies data from this object to another S3 object
      *
@@ -410,6 +436,7 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
         $target->copyFrom($this, $copyMetadata);
     }
 
+    // }}}
 }
 
 ?>

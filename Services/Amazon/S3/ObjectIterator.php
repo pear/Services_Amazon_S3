@@ -16,14 +16,14 @@
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in
- *       the documentation and/or other materials provided with the distribution.
- *     * Neither the name of the PHP_LexerGenerator nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the PHP_LexerGenerator nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -41,8 +41,8 @@
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   CVS: $Id$
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -60,13 +60,15 @@ require_once 'Services/Amazon/S3.php';
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <services.amazon.s3@chsc.dk>
  * @copyright 2008-2009 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   Release: @package_version@
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
  * @see       Services_Amazon_S3_Resource_Bucket::getObjects()
- */ 
+ */
 class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
 {
+    // {{{ public properties
+
     /**
      * The bucket to search.
      * @var Services_Amazon_S3_Resource_Bucket
@@ -96,6 +98,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
      * @see Services_Amazon_S3::$maxKeys
      */
     public $maxKeys;
+
+    // }}}
+    // {{{ private properties
 
     /**
      * Current iterator value.
@@ -141,6 +146,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
      */
     private $_isFirstPage = false;
 
+    // }}}
+    // {{{ __construct()
+
     /**
      * Constructor. This is called from
      * Services_Amazon_S3_Resource_Bucket::getObjects().
@@ -153,6 +161,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
         $this->maxKeys = $this->bucket->s3->maxKeys;
     }
 
+    // }}}
+    // {{{ current()
+
     /**
      * Returns the current iterator value.
      *
@@ -162,6 +173,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
     {
         return $this->_current;
     }
+
+    // }}}
+    // {{{ key()
 
     /**
      * Returns the key of the current iterator value.
@@ -179,6 +193,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
         }
     }
 
+    // }}}
+    // {{{ hasChildren()
+
     /**
      * Returns whether the current key represents a common prefix.
      *
@@ -188,6 +205,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
     {
         return $this->_current instanceof Services_Amazon_S3_Prefix;
     }
+
+    // }}}
+    // {{{ getChildren()
 
     /**
      * Returns an iterator over objects whose key starting with the common
@@ -202,6 +222,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
             return $this->_current->getObjects();
         }
     }
+
+    // }}}
+    // {{{ rewind()
 
     /**
      * Resets the internal iterator pointer.
@@ -221,6 +244,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
         $this->next();
     }
 
+    // }}}
+    // {{{ valid()
+
     /**
      * Returns whether the internal iterator pointer points to an existing
      * value.
@@ -233,6 +259,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
                $this->_currentIndex < $this->_nodeList->length ||
                $this->_isTruncated;
     }
+
+    // }}}
+    // {{{ next()
 
     /**
      * Advances the internal iterator pointer.
@@ -279,6 +308,9 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
         }
     }
 
+    // }}}
+    // {{{ _sendRequest()
+
     /**
      * Fetches a list of the next $maxKeys entries from the web service.
      *
@@ -321,6 +353,8 @@ class Services_Amazon_S3_ObjectIterator implements RecursiveIterator
         }
         $this->_currentIndex = 0;
     }
+
+    // }}}
 }
 
 ?>

@@ -1,5 +1,7 @@
 <?php
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 /**
  * Services_Amazon_S3_Resource, base class for Services_Amazon_S3_Resource_Bucket
  * and Services_Amazon_S3_Resource_Object.
@@ -15,14 +17,14 @@
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in
- *       the documentation and/or other materials provided with the distribution.
- *     * Neither the name of the PHP_LexerGenerator nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the PHP_LexerGenerator nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -40,8 +42,8 @@
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   CVS: $Id$
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -58,12 +60,14 @@ require_once 'Services/Amazon/S3.php';
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   Release: @package_version@
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
- */ 
+ */
 abstract class Services_Amazon_S3_Resource
 {
+    // {{{ public properties
+
     /**
      * The service instance this resource belongs to.
      * @var Services_Amazon_S3
@@ -79,6 +83,9 @@ abstract class Services_Amazon_S3_Resource
      */
     public $acl;
 
+    // }}}
+    // {{{ protected properties
+
     /**
      * Whether this object is known to exist or the server. This is updated in
      * self::load().
@@ -86,12 +93,18 @@ abstract class Services_Amazon_S3_Resource
      */
     protected $exists = false;
 
+    // }}}
+    // {{{ getURL()
+
     /**
      * Returns the URL of this resource.
      *
      * @return string  an absolute URL
      */
     public abstract function getURL();
+
+    // }}}
+    // {{{ getSignedUrl()
 
     /**
      * Returns an URL with credentials included in the query string. This will
@@ -120,6 +133,9 @@ abstract class Services_Amazon_S3_Resource
             '&Expires=' . $expires;
     }
 
+    // }}}
+    // {{{ load()
+
     /**
      * Loads this resource from the server and propagates relevant properties.
      *
@@ -128,6 +144,9 @@ abstract class Services_Amazon_S3_Resource
      */
     public abstract function load();
 
+    // }}}
+    // {{{ save()
+
     /**
      * Saves this resource to the server (including its access control list).
      *
@@ -135,6 +154,9 @@ abstract class Services_Amazon_S3_Resource
      * @throws Services_Amazon_S3_Exception
      */
     public abstract function save();
+
+    // }}}
+    // {{{ delete()
 
     /**
      * Deletes this resource from the server.
@@ -151,6 +173,9 @@ abstract class Services_Amazon_S3_Resource
         }
     }
 
+    // }}}
+    // {{{ loadACL()
+
     /**
      * Loads this resource's access control list from the server and
      * propagates the acl property.
@@ -164,6 +189,8 @@ abstract class Services_Amazon_S3_Resource
         $this->acl = new Services_Amazon_S3_AccessControlList($this);
         $this->acl->load();
     }
+
+    // }}}
 }
 
 ?>

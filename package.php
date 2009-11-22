@@ -131,17 +131,10 @@ $package->addMaintainer(
 );
 
 $package->addReplacement(
-    'Services/Amazon/S3.php',
+    'Services/Amazon/S3.php,Services/Amazon/S3/*,Services/Amazon/S3/Resource/*',
     'package-info',
-    '@api-version@',
-    'api-version'
-);
-
-$package->addReplacement(
-    'Services/Amazon/S3.php',
-    'package-info',
-    '@name@',
-    'name'
+    '@release-version@',
+    'version'
 );
 
 $package->setPhpDep('5.1.1');

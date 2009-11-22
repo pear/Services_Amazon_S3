@@ -1,5 +1,7 @@
 <?php
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 /**
  * Services_Amazon_S3_AccessControlList, permissions on buckets and objects.
  *
@@ -14,14 +16,14 @@
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in
- *       the documentation and/or other materials provided with the distribution.
- *     * Neither the name of the PHP_LexerGenerator nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the PHP_LexerGenerator nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -39,8 +41,8 @@
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   CVS: $Id$
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   $Id$
  * @link      http://docs.amazonwebservices.com/AmazonS3/2006-03-01/RESTAccessPolicy.html
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
@@ -74,14 +76,14 @@ require_once 'PEAR/Exception.php';
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   Release:  @package_version@
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   @release-version@
  * @link      http://docs.amazonwebservices.com/AmazonS3/2006-03-01/S3_ACLs.html
  * @link      http://pear.php.net/package/Services_Amazon_S3
- */ 
+ */
 class Services_Amazon_S3_AccessControlList
 {
-    // Predefined access control lists
+    // {{{ class constants
 
     /**
      * Canned access control list:
@@ -171,11 +173,17 @@ class Services_Amazon_S3_AccessControlList
      */
     const ID_ANONYMOUS = '65a011a29cdf8ec533ec3d1ccaae921c';
 
+    // }}}
+    // {{{ public properties
+
     /**
      * The resource this ACL applies to.
      * @var Services_Amazon_S3_Resource
      */
     public $resource;
+
+    // }}}
+    // {{{ private properties
 
     /**
      * The resource this ACL applies to.
@@ -194,6 +202,9 @@ class Services_Amazon_S3_AccessControlList
         'WRITE_ACP'    => self::PERMISSION_WRITE_ACP,
     );
 
+    // }}}
+    // {{{ __construct()
+
     /**
      * Constructor.
      *
@@ -204,6 +215,9 @@ class Services_Amazon_S3_AccessControlList
     {
         $this->resource = $resource;
     }
+
+    // }}}
+    // {{{ getGrantees()
 
     /**
      * Returns an array of grantee arrays.
@@ -219,6 +233,9 @@ class Services_Amazon_S3_AccessControlList
         }
         return $grantees;
     }
+
+    // }}}
+    // {{{ getPermissions()
 
     /**
      * Returns the permissions for the specified grantee.
@@ -249,6 +266,9 @@ class Services_Amazon_S3_AccessControlList
         return $permissions;
     }
 
+    // }}}
+    // {{{ setPermissions()
+
     /**
      * Returns the permissions for the specified grantee.
      *
@@ -263,6 +283,9 @@ class Services_Amazon_S3_AccessControlList
         $this->_grantees[$key]                = $grantee;
         $this->_grantees[$key]['permissions'] = $permissions;
     }
+
+    // }}}
+    // {{{ _getGranteeKey()
 
     /**
      * Returns the array index in the $this->grantee array for the specified
@@ -299,6 +322,9 @@ class Services_Amazon_S3_AccessControlList
         return $grantee['type'] . ' ' . $grantee[$part2];
     }
 
+    // }}}
+    // {{{ load()
+
     /**
      * Loads this ACL from the server.
      *
@@ -327,7 +353,7 @@ class Services_Amazon_S3_AccessControlList
                     'ID'          =>
                         $xPath->evaluate('string(s3:ID)', $elGrantee),
                     // DisplayName is empty for anonymous user
-                    'displayName' => 
+                    'displayName' =>
                         $xPath->evaluate('string(s3:DisplayName)', $elGrantee),
                     );
                 break;
@@ -357,6 +383,9 @@ class Services_Amazon_S3_AccessControlList
             $this->_grantees[$key]['permissions'] |= self::$_string2flag[$permission];
         }
     }
+
+    // }}}
+    // {{{ save()
 
     /**
      * Saves this ACL to the server.
@@ -423,6 +452,8 @@ class Services_Amazon_S3_AccessControlList
                                          HTTP_Request2::METHOD_PUT, $headers,
                                          $doc->saveXML());
     }
-} 
+
+    // }}}
+}
 
 ?>

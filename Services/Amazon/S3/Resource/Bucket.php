@@ -1,5 +1,7 @@
 <?php
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 /**
  * Services_Amazon_S3_Resource_Bucket, represents an Amazon S3 bucket, i.e. a
  * container for objects
@@ -15,14 +17,14 @@
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in
- *       the documentation and/or other materials provided with the distribution.
- *     * Neither the name of the PHP_LexerGenerator nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the PHP_LexerGenerator nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -40,8 +42,8 @@
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   CVS: $Id$
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
  */
 
@@ -58,12 +60,14 @@ require_once 'Services/Amazon/S3.php';
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @copyright 2008 Peytz & Co. A/S
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   Release: @package_version@
+ * @license   http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version   @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
- */ 
+ */
 class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
 {
+    // {{{ class constants
+
     /**
      * Access bucket using http://mybucket.s3.amazonaws.com. This will not
      * work for bucket names that are not "DNS-friendly".
@@ -85,16 +89,19 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     /**
      * Access bucket using http://mybucket.example.com/ (the name of the
      * bucket is "mybucket.example.tld"). The hostname mybucket.example.com
-     * should be defined as a CNAME record pointing to 
+     * should be defined as a CNAME record pointing to
      * mybucket.example.tld.s3.amazonaws.com.
      * If $s3->useSSL is true, the
      * SSL certificate will not match the hostname (but currently this problem
      * is silently ignored by Net_Socket). This problem is usually silently
-     * ignored, though, depending on the context options for the ssl:// 
+     * ignored, though, depending on the context options for the ssl://
      * wrapper. This behavior is subject to change.
      * @link http://www.php.net/manual/da/transports.php#transports.inet
      */
     const REQUEST_STYLE_CNAME = 'cname';
+
+    // }}}
+    // {{{ public properties
 
     /**
      * The name of this bucket.
@@ -128,6 +135,9 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
      */
     public $endpoint;
 
+    // }}}
+    // {{{ __construct()
+
     /**
      * Constructor. This should only be used internally. New bucket instances
      * should be created using $s3->getBucket($name) or $s3->getBuckets().
@@ -144,6 +154,9 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         $this->requestStyle = $s3->requestStyle;
         $this->endpoint     = $s3->endpoint;
     }
+
+    // }}}
+    // {{{ getURL()
 
     /**
      * Returns the URL of this bucket.
@@ -191,6 +204,9 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         }
     }
 
+    // }}}
+    // {{{ getObject()
+
     /**
      * Returns the object with the specified key. The object may or may not
      * exist on the server. Use {@see Services_Amazon_S3_Resource_Object::load()}
@@ -204,6 +220,9 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     {
         return new Services_Amazon_S3_Resource_Object($this, $key);
     }
+
+    // }}}
+    // {{{ getObjects()
 
     /**
      * Returns an iterator over Services_Amazon_S3_Resource_Object and
@@ -229,6 +248,9 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         return $iterator;
     }
 
+    // }}}
+    // {{{ load()
+
     /**
      * Loads this resource from the server and propagates relevant properties.
      *
@@ -250,6 +272,9 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         return true;
     }
 
+    // }}}
+    // {{{ save()
+
     /**
      * Saves this resource to the server. On existing buckets, only the ACL
      * is saved. When saving an existing bucket, load() should be called in
@@ -266,7 +291,7 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         }
         if (!$this->exists) {
             if ($this->locationConstraint) {
-                $body =  '<?xml version="1.0" encoding="ISO-8859-1"?>' .
+                $body =  '<?xml version="1.0" encoding="ISO-8859-1"?' . '>' .
                          '<CreateBucketConfiguration' .
                          ' xmlns="http://s3.amazonaws.com/doc/2006-03-01/">' .
                           '<LocationConstraint>' .
@@ -290,6 +315,9 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         }
     }
 
+    // }}}
+    // {{{ loadLocationConstraint()
+
     /**
      * Queries the server for the location constraint for this bucket and
      * propagates the locationConstraint property.
@@ -305,6 +333,8 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
 
         $this->locationConstraint = $s ? $s : false;
     }
+
+    // }}}
 }
 
 ?>
