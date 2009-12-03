@@ -386,11 +386,13 @@ class Services_Amazon_S3
         // Generate CanonicalizedAmzHeaders part
         $amzHeaders = array();
         foreach ($headers as $name => $value) {
-            if (strncmp($name, 'x-amz-', 6) == 0) {
+            if (strncmp($name, 'x-amz-', 6) === 0) {
                 $amzHeaders[rtrim($name)] = trim($value);
             }
         }
+
         ksort($amzHeaders);
+
         foreach ($amzHeaders as $name => $value) {
             // unfold long headers
             $value = preg_replace('/\s*\n\s*/', ' ', $value);
@@ -495,6 +497,14 @@ class Services_Amazon_S3
         }
         if ($query) {
             $url .= http_build_query($query, '', '&');
+        }
+
+        // Convert null headers to empty strings so they still get sent with
+        // the request. (Bug #16827)
+        foreach ($headers as $name => $value) {
+            if ($value === null) {
+                $headers[$name] = '';
+            }
         }
 
         // Send request

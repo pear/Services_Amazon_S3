@@ -260,6 +260,31 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
         // load() show always throw an exception
         $this->assertTrue(false);
     }
+
+    /**
+     * Tries to put an object with an empty user meta-data field.
+     *
+     * See Bug #16827.
+     */
+    public function testNullUserMetadata()
+    {
+        $key = uniqid('null-meta-data-');
+
+        $metaData = array(
+            'md5' => null,
+            'bar' => 'baz',
+        );
+
+        $object1 = $this->bucket->getObject($key);
+        $object1->userMetadata = $metaData;
+        $object1->data = 'foo';
+        $object1->save();
+
+        $object2 = $this->bucket->getObject($key);
+        $found = $object2->load();
+        $this->assertTrue($found);
+        $this->assertEquals($metaData, $object2->userMetadata);
+    }
 }
 
 if (PHPUnit_MAIN_METHOD == 'Services_Amazon_S3_Test::main') {
