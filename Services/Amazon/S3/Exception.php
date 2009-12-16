@@ -134,7 +134,7 @@ class Services_Amazon_S3_Exception extends PEAR_Exception
                 $code = $this->response->getStatus();
             }
         } else {
-            $message = (string) $messageOrRequest;
+            $message = (string) $messageOrResponse;
         }
         parent:: __construct($message, $code);
     }
