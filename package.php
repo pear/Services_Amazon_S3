@@ -12,7 +12,7 @@
  * Copyright 2009 silverorange
  *
  * Copyright (c) 2008-2009, Peytz & Co. A/S
- * Copyright (c) 2009, silverorange
+ * Copyright (c) 2009-2010, silverorange
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -54,14 +54,12 @@ PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $api_version     = '0.3.0';
 $api_state       = 'alpha';
 
-$release_version = '0.3.0';
+$release_version = '0.3.1';
 $release_state   = 'alpha';
 $release_notes   =
-    " * Implemented Request #15239. Use HTTP_Request2. This allows for " .
-    "   better forwards-compatibility with PHP.\n" .
-    " * Implemented Request #14751. Add S3 object copy method.\n" .
-    " * Implemented Request #16517. Make object iterator populate the eTag, " .
-    "   lastModified and size properties.\n";
+    " * Fixed Bug #16827 - Adding empty value for custom metadata causes " .
+    "   signature to generate incorrectly.\n" .
+    " * Fixed Bug #16912 - Invalid variable in exception class.\n";
 
 $description =
     "This package provides an object-oriented interface to the Amazon " .
