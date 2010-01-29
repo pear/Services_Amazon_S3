@@ -30,10 +30,10 @@ Features:
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2009-11-22</date>
- <time>03:14:44</time>
+ <date>2010-01-28</date>
+ <time>23:10:46</time>
  <version>
-  <release>0.3.0</release>
+  <release>0.3.1</release>
   <api>0.3.0</api>
  </version>
  <stability>
@@ -42,9 +42,8 @@ Features:
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-* Implemented Request #15239. Use HTTP_Request2. This allows for    better forwards-compatibility with PHP.
- * Implemented Request #14751. Add S3 object copy method.
- * Implemented Request #16517. Make object iterator populate the eTag,    lastModified and size properties.
+* Fixed Bug #16827 - Adding empty value for custom metadata causes    signature to generate incorrectly.
+ * Fixed Bug #16912 - Invalid variable in exception class.
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -108,19 +107,18 @@ Features:
  <changelog>
   <release>
    <version>
-    <release>0.3.0</release>
+    <release>0.3.1</release>
     <api>0.3.0</api>
    </version>
    <stability>
     <release>alpha</release>
     <api>alpha</api>
    </stability>
-   <date>2009-11-22</date>
+   <date>2010-01-28</date>
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
-* Implemented Request #15239. Use HTTP_Request2. This allows for    better forwards-compatibility with PHP.
- * Implemented Request #14751. Add S3 object copy method.
- * Implemented Request #16517. Make object iterator populate the eTag,    lastModified and size properties.
+* Fixed Bug #16827 - Adding empty value for custom metadata causes    signature to generate incorrectly.
+ * Fixed Bug #16912 - Invalid variable in exception class.
    </notes>
   </release>
  </changelog>
