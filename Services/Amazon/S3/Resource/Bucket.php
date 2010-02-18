@@ -10,7 +10,9 @@
  *
  * LICENSE:
  *
- * Copyright (c) 2008, Peytz & Co. A/S
+ * Copyright (c) 2008 Peytz & Co. A/S
+ * Copyright (c) 2010 silverorange, Inc
+ *
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +43,8 @@
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008 Peytz & Co. A/S
+ * @author    Michael Gauthier <mike@silverorange.com>
+ * @copyright 2008 Peytz & Co. A/S, 2010 silverorange Inc
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
  * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -53,13 +56,19 @@
 require_once 'Services/Amazon/S3.php';
 
 /**
+ * Bucket logging status class
+ */
+require_once 'Services/Amazon/S3/LoggingStatus.php';
+
+/**
  * Services_Amazon_S3_Resource_Bucket represents an Amazon S3 bucket, i.e. a
  * container for objects.
  *
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008 Peytz & Co. A/S
+ * @author    Michael Gauthier <mike@silverorange.com>
+ * @copyright 2008 Peytz & Co. A/S, 2010 silverorange Inc
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
  * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -134,6 +143,15 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
      * @see Services_Amazon_S3_Resource_Bucket::REQUEST_STYLE_PATH
      */
     public $endpoint;
+
+    /**
+     * The logging status of this bucket
+     *
+     * @var Services_Amazon_S3_LoggingStatus
+     *
+     * @see Services_Amazon_S3_Resource_Bucket::loadLoggingStatus()
+     */
+    public $loggingStatus;
 
     // }}}
     // {{{ __construct()
@@ -280,11 +298,15 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     // {{{ save()
 
     /**
-     * Saves this resource to the server. On existing buckets, only the ACL
-     * is saved. When saving an existing bucket, load() should be called in
-     * advance.
+     * Saves this bucket to the server
+     *
+     * For existing buckets, only the ACL and logging status are saved. When
+     * saving an existing bucket,
+     * {@link Services_Amazon_S3_Resource_Bucket::load()} should be called in
+     * advance so as not to overwrite the existing bucket on save.
      *
      * @return void
+     *
      * @throws Services_Amazon_S3_Exception
      */
     public function save()
@@ -326,6 +348,10 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         if ($this->acl instanceof Services_Amazon_S3_AccessControlList) {
             $this->acl->save();
         }
+
+        if ($this->loggingStatus instanceof Services_Amazon_S3_LoggingStatus) {
+            $this->loggingStatus->save();
+        }
     }
 
     // }}}
@@ -345,6 +371,26 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         $s        = $xPath->evaluate('string(/s3:LocationConstraint)');
 
         $this->locationConstraint = $s ? $s : false;
+    }
+
+    // }}}
+    // {{{ loadLoggingStatus()
+
+    /**
+     * Loads this bucket's logging status from the server
+     *
+     * Upon loading, the
+     * {@link Services_Amazon_S3_Resource_Bucket::$loggingStatus} property
+     * will be set to the loaded {@link Services_Amazon_S3_LoggingStatus}
+     * object.
+     *
+     * @return void
+     *
+     * @throws Services_Amazon_S3_Exception
+     */
+    public function loadLoggingStatus()
+    {
+        include_once 'Services/Amazon/S3/LoggingStatus.php';
     }
 
     // }}}
