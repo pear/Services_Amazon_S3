@@ -402,11 +402,8 @@ class Services_Amazon_S3_Resource_Object extends Services_Amazon_S3_Resource
 
         $xPath = Services_Amazon_S3::getDOMXPath($response);
 
-        $this->eTag = trim(
-            $xPath->evaluate(
-                'string(s3:CopyObjectResult/s3:ETag)'
-            ),
-            '"'
+        $this->eTag = $xPath->evaluate(
+            'string(s3:CopyObjectResult/s3:ETag)'
         );
 
         $this->lastModified = $xPath->evaluate(
