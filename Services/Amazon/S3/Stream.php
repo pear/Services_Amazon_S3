@@ -76,7 +76,8 @@ require_once 'Services/Amazon/S3.php';
  * <ul>
  * <li>access_key_id     string 20-character key id</li>
  * <li>secret_access_key string 40-character secred key</li>
- * <li>http_options      array  is mapped to $s3->httpOptions</li>
+ * <li>http_config       array  is mapped to $s3->httpConfig</li>
+ * <li>http_options      array  deprecated alias for http_config</li>
  * <li>use_ssl           bool   maps to $s3->useSSL</li>
  * <li>request_style     string maps to $s3->useSSL</li>
  * <li>endpoint          string maps to $s3->endpoint</li>
@@ -931,13 +932,22 @@ class Services_Amazon_S3_Stream
                 $this->_s3 = Services_Amazon_S3::getAnonymousAccount();
             }
 
-            // Various options
+            // backwards compatibility, see Bug #18292.
             if (isset($this->_options['http_options'])) {
-                $this->_s3->httpOptions = array_merge(
-                    $this->_s3->httpOptions,
+                $this->_s3->httpConfig = array_merge(
+                    $this->_s3->httpConfig,
                     $this->_options['http_options']
                 );
             }
+
+            // Various options
+            if (isset($this->_options['http_config'])) {
+                $this->_s3->httpConfig = array_merge(
+                    $this->_s3->httpConfig,
+                    $this->_options['http_config']
+                );
+            }
+
             if (isset($this->_options['use_ssl'])) {
                 $this->_s3->useSSL = (bool) $this->_options['use_ssl'];
             }
