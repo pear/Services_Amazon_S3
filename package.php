@@ -54,12 +54,11 @@ PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $api_version     = '0.3.0';
 $api_state       = 'alpha';
 
-$release_version = '0.3.1';
+$release_version = '0.3.2';
 $release_state   = 'alpha';
 $release_notes   =
-    " * Fixed Bug #16827 - Adding empty value for custom metadata causes " .
-    "   signature to generate incorrectly.\n" .
-    " * Fixed Bug #16912 - Invalid variable in exception class.\n";
+    " * Fixed Bug #18292 - Bad variable name httpOptions in Steam class.\n" .
+    " * Fixed Bug #17042 - eTag should not have quotation marks stripped.\n";
 
 $description =
     "This package provides an object-oriented interface to the Amazon " .
