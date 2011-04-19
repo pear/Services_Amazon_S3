@@ -473,7 +473,8 @@ class Services_Amazon_S3_Stream
     public function stream_close()
     {
         $ok = true;
-        if ($this->_mode == 'w') {
+        $modes = array('w', 'a', 'c', 'x');
+        if (in_array($this->_mode, $modes)) {
             $length = ftell($this->_fileHandle);
             if ($length) {
                 rewind($this->_fileHandle);
