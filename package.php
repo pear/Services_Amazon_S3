@@ -9,10 +9,10 @@
  *
  * LICENSE:
  *
- * Copyright 2009 silverorange
+ * Copyright 2009-2011 silverorange
  *
  * Copyright (c) 2008-2009, Peytz & Co. A/S
- * Copyright (c) 2009-2010, silverorange
+ * Copyright (c) 2009-2011, silverorange
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,7 +42,7 @@
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Michael Gauthier <mike@silverorange.com>
- * @copyright 2009 silverorange
+ * @copyright 2009-2011 silverorange
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
  * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -54,11 +54,10 @@ PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $api_version     = '0.3.0';
 $api_state       = 'alpha';
 
-$release_version = '0.3.2';
+$release_version = '0.3.3';
 $release_state   = 'alpha';
 $release_notes   =
-    " * Fixed Bug #18292 - Bad variable name httpOptions in Steam class.\n" .
-    " * Fixed Bug #17042 - eTag should not have quotation marks stripped.\n";
+    " * Fixed Bug #18457 - Stream Wrapper ignores various writing modes.\n";
 
 $description =
     "This package provides an object-oriented interface to the Amazon " .
