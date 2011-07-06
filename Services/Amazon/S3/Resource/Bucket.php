@@ -11,7 +11,7 @@
  * LICENSE:
  *
  * Copyright (c) 2008 Peytz & Co. A/S
- * Copyright (c) 2010 silverorange, Inc
+ * Copyright (c) 2010-2011 silverorange, Inc
  *
  * All rights reserved.
  *
@@ -44,7 +44,7 @@
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @author    Michael Gauthier <mike@silverorange.com>
- * @copyright 2008 Peytz & Co. A/S, 2010 silverorange Inc
+ * @copyright 2008 Peytz & Co. A/S, 2010-2011 silverorange, Inc
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
  * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -68,7 +68,7 @@ require_once 'Services/Amazon/S3/LoggingStatus.php';
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
  * @author    Michael Gauthier <mike@silverorange.com>
- * @copyright 2008 Peytz & Co. A/S, 2010 silverorange Inc
+ * @copyright 2008 Peytz & Co. A/S, 2010-2011 silverorange, Inc
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
  * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -154,6 +154,18 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     public $loggingStatus;
 
     // }}}
+    // {{{ protected properties
+
+    /**
+     * Whether or not DNS strict mode is enabled
+     *
+     * @var boolean
+     *
+     * @see Services_Amazon_S3_Resource_Bucket::setDNSStrict()
+     */
+    protected $dnsStrict = true;
+
+    // }}}
     // {{{ __construct()
 
     /**
@@ -199,13 +211,29 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         $prefix = ($this->s3->useSSL ? 'https' : 'http') . '://';
         switch ($this->requestStyle) {
         case self::REQUEST_STYLE_VIRTUAL_HOST:
-            // When using virtual hosted-style requests, bucket names must also
-            // - be between 3 and 63 characters long.
-            // - be all lowercase.
-            // - not end with a dash.
-            // - not contain periods next to dashes.
-            // - not contain two periods in a row.
-            if (!preg_match('/^(?:[a-z0-9]|(?<!-|\.)\.|(?<!\.)-){3,63}(?<!\-)$/', $this->name)) {
+            if ($this->dnsStrict) {
+                $expression = '/^                                                   ' .
+                    '    (?:                                                        ' .
+                    '        [a-z0-9]    # lower-case alpha-numeric                 ' .
+                    '        |                                                      ' .
+                    '        (?<!-|\.)\. # period not preceeded by a dash or period ' .
+                    '        |                                                      ' .
+                    '        (?<!\.)-    # dash not preceeded by a period           ' .
+                    '    ){3,63}         # between 3 and 63 chars long              ' .
+                    '    (?<!\-)         # not ending in dash                       ' .
+                    '$/x';
+            } else {
+                $expression = '/^                                                   ' .
+                    '    (?:                                                        ' .
+                    '        [a-z0-9_]   # lower-case alpha-numeric, or underscore  ' .
+                    '        |                                                      ' .
+                    '        (?<!-|\.)\. # period not preceeded by a dash or period ' .
+                    '        |                                                      ' .
+                    '        (?<!\.)-    # dash not preceeded by a period           ' .
+                    '    ){3,63}         # between 3 and 63 chars long              ' .
+                    '$/x';
+            }
+            if (!preg_match($expression, $this->name)) {
                 throw new Services_Amazon_S3_Exception(
                     'Invalid bucket name when requestStyle is ' .
                     'REQUEST_STYLE_VIRTUAL_HOST: ' . $this->name);
@@ -264,6 +292,32 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         $iterator->prefix    = $prefix;
         $iterator->delimiter = $delimiter;
         return $iterator;
+    }
+
+    // }}}
+    // {{{ setDNSStrict()
+
+    /**
+     * Sets the DNS strict mode for this bucket
+     *
+     * S3 can use a virtual-host style method of accessing buckets (i.e.
+     * mybucket.s3.amazonaws.com). When DNS strict mode is enabled (default)
+     * the name of buckets must conform to the suggested bucket name syntax.
+     * This means underscores are forbidden. When DNS strict mode is disabled,
+     * underscores can be used for bucket names.
+     *
+     * @param $strict boolean whether or not to enable DNS strict mode for this
+     *                        bucket.
+     *
+     * @return Services_Amazon_S3_Resource_Bucket the current object for fluent
+     *                                            interface.
+     *
+     * @see Services_Amazon_S3_Resource_Bucket::$requestStyle
+     */
+    public function setDNSStrict($strict)
+    {
+        $this->dnsStrict = ($strict) ? true : false;
+        return $this;
     }
 
     // }}}

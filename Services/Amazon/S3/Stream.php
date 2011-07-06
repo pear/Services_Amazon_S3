@@ -9,7 +9,9 @@
  *
  * LICENSE:
  *
- * Copyright (c) 2008-2009, Peytz & Co. A/S
+ * Copyright (c) 2008-2009 Peytz & Co. A/S
+ * Copyright (c) 2011 silverorange, Inc
+ *
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +42,7 @@
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008-2009 Peytz & Co. A/S
+ * @copyright 2008-2009 Peytz & Co. A/S, 2011 silverorange, Inc
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
  * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -85,11 +87,14 @@ require_once 'Services/Amazon/S3.php';
  *                              applies this ACL to new files</li>
  * <li>strict            bool   use strict mode (see below) - the default is
  *                              false</li>
+ * <li>dns_strict        bool   use strict mode for DNS names (see below) - the
+ *                              default is true</li>
  * </ul>
  *
  * The wrapper assumes that all paths names are encoded in UTF-8.
  *
- * Strict mode:
+ * Strict Mode:
+ *
  * S3 buckets has no directory structure but just treats a path with slashes as
  * verbatim string. Contrary to a regular filesystem this makes it possible to
  * create an object with the key "foo/bar/baz" without "foo/bar" being created
@@ -101,10 +106,19 @@ require_once 'Services/Amazon/S3.php';
  * additional requests to the server. Most code will not require these checks,
  * so by default strict mode is disabled.
  *
+ * DNS Strict Mode:
+ *
+ * S3 can use a virtual-host style method of accessing buckets (i.e.
+ * mybucket.s3.amazonaws.com). When DNS strict mode is enabled (default) the
+ * name of buckets must conform to the suggested bucket name syntax. This means
+ * underscores are forbidden. When DNS strict mode is disabled, underscores
+ * can be used for bucket names.
+ *
  * @category  Services
  * @package   Services_Amazon_S3
  * @author    Christian Schmidt <chsc@peytz.dk>
- * @copyright 2008-2009 Peytz & Co. A/S
+ * @author    Michael Gauthier <mike@silverorange.com>
+ * @copyright 2008-2009 Peytz & Co. A/S, 2011 silverorange, Inc
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
  * @version   Release: @release-version@
  * @link      http://pear.php.net/package/Services_Amazon_S3
@@ -567,6 +581,9 @@ class Services_Amazon_S3_Stream
         list($bucketName, $key) = $this->_parsePath($toPath, false);
 
         $toBucket = $this->_s3->getBucket($bucketName);
+        if (isset($this->_options['dns_strict'])) {
+            $toBucket->setDNSStrict($this->_options['dns_strict']);
+        }
         $toObject = $toBucket->getObject($key);
 
         try {
@@ -964,6 +981,9 @@ class Services_Amazon_S3_Stream
 
             if ($bucketName) {
                 $this->_bucket = $this->_s3->getBucket($bucketName);
+                if (isset($this->_options['dns_strict'])) {
+                    $this->_bucket->setDNSStrict($this->_options['dns_strict']);
+                }
                 // If $path ends with "/", it is a signal that this is a
                 // directory
                 if ($key && substr($key, -1) != '/') {
