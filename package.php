@@ -54,10 +54,10 @@ PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $api_version     = '0.3.0';
 $api_state       = 'alpha';
 
-$release_version = '0.3.3';
+$release_version = '0.3.4';
 $release_state   = 'alpha';
 $release_notes   =
-    " * Fixed Bug #18457 - Stream Wrapper ignores various writing modes.\n";
+    " * Fixed Bug #18654 - Allow underscores in bucket names.\n";
 
 $description =
     "This package provides an object-oriented interface to the Amazon " .
