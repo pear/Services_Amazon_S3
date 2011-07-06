@@ -115,7 +115,7 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     /**
      * The name of this bucket.
      * @var string (UTF-8)
-     * @link http://docs.amazonwebservices.com/AmazonS3/2006-03-01/BucketRestrictions.html
+     * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/index.html?BucketRestrictions.html
      */
     public $name;
 
@@ -131,7 +131,7 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
      * $this->s3->requestStyle.
      * @var string  a self::REQUEST_STYLE_xxx constant
      * @see Services_Amazon_S3_Resource_Bucket::$requestStyle
-     * @link http://docs.amazonwebservices.com/AmazonS3/2006-03-01/VirtualHosting.html
+     * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/index.html?VirtualHosting.html
      */
     public $requestStyle;
 
