@@ -206,7 +206,8 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
             || ip2long($this->name)
         ) {
             throw new Services_Amazon_S3_Exception(
-                'Invalid bucket name: ' . $this->name);
+                'Invalid bucket name: ' . $this->name
+            );
         }
         $prefix = ($this->s3->useSSL ? 'https' : 'http') . '://';
         switch ($this->requestStyle) {
@@ -236,7 +237,8 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
             if (!preg_match($expression, $this->name)) {
                 throw new Services_Amazon_S3_Exception(
                     'Invalid bucket name when requestStyle is ' .
-                    'REQUEST_STYLE_VIRTUAL_HOST: ' . $this->name);
+                    'REQUEST_STYLE_VIRTUAL_HOST: ' . $this->name
+                );
             }
             return $prefix . $this->name . '.' . $this->endpoint . '/';
         case self::REQUEST_STYLE_PATH:
@@ -246,7 +248,8 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
             return $prefix . $this->name . '/';
         default:
             throw new Services_Amazon_S3_Exception(
-                'Invalid requestStyle: ' . $this->requestStyle);
+                'Invalid requestStyle: ' . $this->requestStyle
+            );
         }
     }
 
@@ -306,7 +309,7 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
      * This means underscores are forbidden. When DNS strict mode is disabled,
      * underscores can be used for bucket names.
      *
-     * @param $strict boolean whether or not to enable DNS strict mode for this
+     * @param boolean $strict whether or not to enable DNS strict mode for this
      *                        bucket.
      *
      * @return Services_Amazon_S3_Resource_Bucket the current object for fluent
