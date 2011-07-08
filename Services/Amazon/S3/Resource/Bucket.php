@@ -212,26 +212,26 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
         switch ($this->requestStyle) {
         case self::REQUEST_STYLE_VIRTUAL_HOST:
             if ($this->dnsStrict) {
-                $expression = '/^                                                   ' .
-                    '    (?:                                                        ' .
-                    '        [a-z0-9]    # lower-case alpha-numeric                 ' .
-                    '        |                                                      ' .
-                    '        (?<!-|\.)\. # period not preceeded by a dash or period ' .
-                    '        |                                                      ' .
-                    '        (?<!\.)-    # dash not preceeded by a period           ' .
-                    '    ){3,63}         # between 3 and 63 chars long              ' .
-                    '    (?<!\-)         # not ending in dash                       ' .
-                    '$/x';
+                $expression = "/^                                         \n" .
+                    "  (?:                                                \n" .
+                    "    [a-z0-9]    # lower-case alpha-numeric           \n" .
+                    "    |                                                \n" .
+                    "    (?<!-|\.)\. # dot not preceeded by a dash or dot \n" .
+                    "    |                                                \n" .
+                    "    (?<!\.)-    # dash not preceeded by a dot        \n" .
+                    "  ){3,63}       # between 3 and 63 chars long        \n" .
+                    "  (?<!\-)       # not ending in dash                 \n" .
+                    "$/x";
             } else {
-                $expression = '/^                                                   ' .
-                    '    (?:                                                        ' .
-                    '        [a-z0-9_]   # lower-case alpha-numeric, or underscore  ' .
-                    '        |                                                      ' .
-                    '        (?<!-|\.)\. # period not preceeded by a dash or period ' .
-                    '        |                                                      ' .
-                    '        (?<!\.)-    # dash not preceeded by a period           ' .
-                    '    ){3,63}         # between 3 and 63 chars long              ' .
-                    '$/x';
+                $expression = "/^                                              \n" .
+                    "  (?:                                                     \n" .
+                    "    [a-z0-9_]   # lower-case alpha-numeric, or underscore \n" .
+                    "    |                                                     \n" .
+                    "    (?<!-|\.)\. # dot not preceeded by a dash or dot      \n" .
+                    "    |                                                     \n" .
+                    "    (?<!\.)-    # dash not preceeded by a dot             \n" .
+                    "  ){3,63}       # between 3 and 63 chars long             \n" .
+                    "$/x";
             }
             if (!preg_match($expression, $this->name)) {
                 throw new Services_Amazon_S3_Exception(
