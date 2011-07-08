@@ -54,10 +54,10 @@ PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $api_version     = '0.3.0';
 $api_state       = 'alpha';
 
-$release_version = '0.3.4';
+$release_version = '0.3.5';
 $release_state   = 'alpha';
 $release_notes   =
-    " * Fixed Bug #18654 - Allow underscores in bucket names.\n";
+    " * Fixed Bug #18658 - Bad regular expression.\n";
 
 $description =
     "This package provides an object-oriented interface to the Amazon " .

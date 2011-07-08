@@ -30,10 +30,10 @@ Features:
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2011-07-06</date>
- <time>15:46:07</time>
+ <date>2011-07-08</date>
+ <time>12:44:28</time>
  <version>
-  <release>0.3.4</release>
+  <release>0.3.5</release>
   <api>0.3.0</api>
  </version>
  <stability>
@@ -42,7 +42,7 @@ Features:
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-* Fixed Bug #18654 - Allow underscores in bucket names.
+* Fixed Bug #18658 - Bad regular expression.
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -107,17 +107,17 @@ Features:
  <changelog>
   <release>
    <version>
-    <release>0.3.4</release>
+    <release>0.3.5</release>
     <api>0.3.0</api>
    </version>
    <stability>
     <release>alpha</release>
     <api>alpha</api>
    </stability>
-   <date>2011-07-06</date>
+   <date>2011-07-08</date>
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
-* Fixed Bug #18654 - Allow underscores in bucket names.
+* Fixed Bug #18658 - Bad regular expression.
    </notes>
   </release>
  </changelog>
