@@ -81,7 +81,7 @@ require_once 'Services/Amazon/S3.php';
  * <li>http_config       array  is mapped to $s3->httpConfig</li>
  * <li>http_options      array  deprecated alias for http_config</li>
  * <li>use_ssl           bool   maps to $s3->useSSL</li>
- * <li>request_style     string maps to $s3->useSSL</li>
+ * <li>request_style     string maps to $s3->requestStyle</li>
  * <li>endpoint          string maps to $s3->endpoint</li>
  * <li>acl               string|Services_Amazon_S3_AccessControlList
  *                              applies this ACL to new files</li>
