@@ -87,8 +87,9 @@ require_once 'Services/Amazon/S3.php';
  *                              applies this ACL to new files</li>
  * <li>strict            bool   use strict mode (see below) - the default is
  *                              false</li>
- * <li>dns_strict        bool   use strict mode for DNS names (see below) - the
+ * <li>dns_strict        bool   use strict mode for dns names (see below) - the
  *                              default is true</li>
+ * <li>content_type      string maps to $s3->contentType</li>
  * </ul>
  *
  * The wrapper assumes that all paths names are encoded in UTF-8.
