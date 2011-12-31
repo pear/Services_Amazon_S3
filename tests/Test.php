@@ -2,10 +2,6 @@
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'Services_Amazon_S3_Test::main');
-}
-
 require_once 'Services/Amazon/S3.php';
 
 $configFile = dirname(__FILE__) . '/config.php';
@@ -35,19 +31,13 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
     private $bucket;
 
     /**
-     * Runs the test methods of this class.
-     */
-    public static function main()
-    {
-        $suite  = new PHPUnit_Framework_TestSuite('Services_Amazon_S3_Test');
-        $result = PHPUnit_TextUI_TestRunner::run($suite);
-    }
-
-    /**
      * Creates a bucket for testing.
      */
     protected function setUp()
     {
+        // set default time zone for tests
+        date_default_timezone_set('UTC');
+
         // These constants must be set in order to run the tests
         if (!defined('ACCESS_KEY_ID') || !defined('SECRET_ACCESS_KEY')
             || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY
@@ -280,10 +270,6 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
         $this->assertTrue($found);
         $this->assertEquals($metaData, $object2->userMetadata);
     }
-}
-
-if (PHPUnit_MAIN_METHOD == 'Services_Amazon_S3_Test::main') {
-    Services_Amazon_S3_Test::main();
 }
 
 ?>

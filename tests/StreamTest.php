@@ -2,10 +2,6 @@
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'Services_Amazon_S3_StreamTest::main');
-}
-
 require_once 'Services/Amazon/S3.php';
 require_once 'Services/Amazon/S3/Stream.php';
 require_once 'Services/Amazon/S3/AccessControlList.php';
@@ -37,30 +33,32 @@ class Services_Amazon_S3_StreamTest extends PHPUnit_Framework_TestCase
     private $bucket;
 
     /**
-     * Runs the test methods of this class.
-     */
-    public static function main()
-    {
-        $suite  = new PHPUnit_Framework_TestSuite('Services_Amazon_S3_StreamTest');
-        $result = PHPUnit_TextUI_TestRunner::run($suite);
-    }
-
-    /**
      * Creates a bucket for testing.
      */
-    protected function setUp() {
+    protected function setUp()
+    {
+        // set default time zone for tests
+        date_default_timezone_set('UTC');
+
         // These constants must be set in order to run the tests
-        if (!defined('ACCESS_KEY_ID') || !defined('SECRET_ACCESS_KEY')
-            || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY
+        if (   !defined('ACCESS_KEY_ID')
+            || !defined('SECRET_ACCESS_KEY')
+            || !ACCESS_KEY_ID
+            || !SECRET_ACCESS_KEY
         ) {
             $this->markTestSkipped('Credentials missing in config.php');
         }
+
         if (!isset($this->bucketName)) {
             $this->bucketName = 'pear-service-amazon-s3-' .
                                 strtolower(ACCESS_KEY_ID);
         }
-        $this->s3 = Services_Amazon_S3::getAccount(ACCESS_KEY_ID,
-                                                   SECRET_ACCESS_KEY);
+
+        $this->s3 = Services_Amazon_S3::getAccount(
+            ACCESS_KEY_ID,
+            SECRET_ACCESS_KEY
+        );
+
         $this->bucket = $this->s3->getBucket($this->bucketName);
         if ($this->bucket->load()) {
             // Clean up after old test
@@ -136,10 +134,6 @@ class Services_Amazon_S3_StreamTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(rename($file2, $file1));
         $this->assertEquals(file_get_contents($file1), 'lorem ipsum');
     }
-}
-
-if (PHPUnit_MAIN_METHOD == 'Services_Amazon_S3_StreamTest::main') {
-    Services_Amazon_S3_StreamTest::main();
 }
 
 ?>
