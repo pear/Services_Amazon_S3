@@ -4,6 +4,7 @@ Storage Service (S3)](http://aws.amazon.com/s3/). This package is based on the
 2006-03-01 REST API.
 
 Features:
+
 1. List, create and delete buckets, including buckets with location constraints
    (European buckets).
 2. Create, read and delete objects including metadata.
