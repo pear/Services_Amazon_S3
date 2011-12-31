@@ -6,9 +6,6 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Services_Amazon_S3_StreamTest::main');
 }
 
-require_once 'PHPUnit/Framework/TestCase.php';
-require_once 'PHPUnit/Framework/TestSuite.php';
-
 require_once 'Services/Amazon/S3.php';
 require_once 'Services/Amazon/S3/Stream.php';
 require_once 'Services/Amazon/S3/AccessControlList.php';
@@ -42,9 +39,8 @@ class Services_Amazon_S3_StreamTest extends PHPUnit_Framework_TestCase
     /**
      * Runs the test methods of this class.
      */
-    public static function main() {
-        require_once 'PHPUnit/TextUI/TestRunner.php';
-
+    public static function main()
+    {
         $suite  = new PHPUnit_Framework_TestSuite('Services_Amazon_S3_StreamTest');
         $result = PHPUnit_TextUI_TestRunner::run($suite);
     }
@@ -85,7 +81,8 @@ class Services_Amazon_S3_StreamTest extends PHPUnit_Framework_TestCase
     /**
      * Deletes the test bucket and all objects in it.
      */
-    protected function tearDown() {
+    protected function tearDown()
+    {
         foreach ($this->bucket->getObjects() as $object) {
             $object->delete();
         }

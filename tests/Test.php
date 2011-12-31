@@ -6,9 +6,6 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Services_Amazon_S3_Test::main');
 }
 
-require_once 'PHPUnit/Framework/TestCase.php';
-require_once 'PHPUnit/Framework/TestSuite.php';
-
 require_once 'Services/Amazon/S3.php';
 
 $configFile = dirname(__FILE__) . '/config.php';
@@ -42,8 +39,6 @@ class Services_Amazon_S3_Test extends PHPUnit_Framework_TestCase
      */
     public static function main()
     {
-        require_once 'PHPUnit/TextUI/TestRunner.php';
-
         $suite  = new PHPUnit_Framework_TestSuite('Services_Amazon_S3_Test');
         $result = PHPUnit_TextUI_TestRunner::run($suite);
     }

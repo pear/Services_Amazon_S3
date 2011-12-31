@@ -6,7 +6,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Services_Amazon_S3_AllTests::main');
 }
 
-require_once 'PHPUnit/TextUI/TestRunner.php';
+require_once 'PHPUnit/Autoload.php';
 
 require_once dirname(__FILE__) . '/Test.php';
 require_once dirname(__FILE__) . '/StreamTest.php';
@@ -23,7 +23,8 @@ class Services_Amazon_S3_AllTests extends PHPUnit_Framework_TestSuite
         PHPUnit_TextUI_TestRunner::run(self::suite());
     }
 
-    protected function setUp() {
+    protected function setUp()
+    {
         // These constants must be set in order to run the tests
         if (!defined('ACCESS_KEY_ID') || !defined('SECRET_ACCESS_KEY')
             || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY
