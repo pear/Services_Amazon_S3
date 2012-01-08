@@ -81,6 +81,9 @@ class Services_Amazon_S3_StreamTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
+        if (empty($this->bucket)) {
+            return;
+        }
         foreach ($this->bucket->getObjects() as $object) {
             $object->delete();
         }
