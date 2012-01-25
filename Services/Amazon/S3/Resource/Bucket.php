@@ -451,6 +451,33 @@ class Services_Amazon_S3_Resource_Bucket extends Services_Amazon_S3_Resource
     }
 
     // }}}
+    // {{{ getLogging
+
+    /**
+     * Get the logging information of this Bucket
+     *
+     * Queries the server for a bucket and retrieves the 
+     * logging status (?logging) for a bucket.
+     *
+     * @throws Services_Amazon_S3_Exception
+     *
+     * @return mixed bool|DOMNodeList Either a false if
+     *               no logging information is found or
+     *               a DOMNodeList of the targetbucket and
+     *               the location of that logging file in the log
+     */
+    public function getLogging()
+    {
+        $response = $this->s3->sendRequest($this, '?logging');
+
+        $query    = '/s3:BucketLoggingStatus/s3:LoggingEnabled';
+        $xPath    = Services_Amazon_S3::getDOMXPath($response);
+        $s        = $xPath->evaluate($query);
+
+        return $s->length > 0 ? $s : false;
+    }
+    // }}}
+
 }
 
 ?>
