@@ -26,17 +26,24 @@ Please submit pull requests for your bug reports!
 
 ## Testing ##
 To test, run either
-$ phpunit tests/
-  or
-$ pear run-tests -r
+
+    $ phpunit tests/
+    
+or
+
+    $ pear run-tests -r
 
 ## Building ##
-To build, simply
-$ pear package
+To build, simply:
+
+    $ pear package
 
 ## Installing ##
-To install from scratch
-$ pear install package.xml
 
-To upgrade
-$ pear upgrade -f package.xml
+To install from scratch:
+
+    $ pear install package.xml
+
+To upgrade:
+
+    $ pear upgrade -f package.xml
