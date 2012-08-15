@@ -52,13 +52,13 @@ error_reporting(0); // E_STRICT mess
 require_once 'PEAR/PackageFileManager2.php';
 PEAR::setErrorHandling(PEAR_ERROR_DIE);
 
-$api_version     = '0.3.0';
+$api_version     = '0.4.0';
 $api_state       = 'alpha';
 
-$release_version = '0.3.5';
+$release_version = '0.4.0';
 $release_state   = 'alpha';
 $release_notes   =
-    " * Fixed Bug #18658 - Bad regular expression.\n";
+    " Request #17131 Ability to fetch the logging information per bucket.\n";
 
 $description =
     "This package provides an object-oriented interface to the Amazon " .
