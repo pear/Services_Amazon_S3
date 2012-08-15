@@ -1,5 +1,6 @@
+#!/usr/bin/env php
 <?php
-
+error_reporting(0); // E_STRICT mess
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -81,7 +82,7 @@ $package = new PEAR_PackageFileManager2();
 
 $package->setOptions(
     array(
-        'filelistgenerator'      => 'svn',
+        'filelistgenerator'      => 'file',
         'simpleoutput'           => true,
         'baseinstalldir'         => '/',
         'packagedirectory'       => './',
@@ -170,4 +171,3 @@ if (   isset($_GET['make'])
     $package->debugPackageFile();
 }
 
-?>
