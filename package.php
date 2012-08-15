@@ -96,6 +96,7 @@ $package->setOptions(
             'README.md'          => 'doc',
         ),
         'ignore'                 => array(
+            '.gitignore',
             'package.php',
             '*.tgz'
         )
