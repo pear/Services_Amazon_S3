@@ -90,9 +90,12 @@ $package->setOptions(
             'Services'           => 'php',
             'Services/Amazon'    => 'php',
             'Services/Amazon/S3' => 'php',
-            'tests'              => 'test'
+            'tests'              => 'test',
         ),
-        'ignore'                  => array(
+        'exceptions'             => array(
+            'README.md'          => 'doc',
+        ),
+        'ignore'                 => array(
             'package.php',
             '*.tgz'
         )
