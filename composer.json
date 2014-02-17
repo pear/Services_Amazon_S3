@@ -13,7 +13,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Services_Amazon_S3": "./"
+            "Services": "./"
         }
     },
     "description": "More info available on: http://pear.php.net/package/Services_Amazon_S3",
@@ -28,7 +28,8 @@
     },
     "type": "library",
     "require": {
-        "pear/pear_exception": "*"
+        "pear/pear_exception": "*",
+        "pear/pear": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
