@@ -1,0 +1,37 @@
+{
+    "authors": [
+        {
+            "email": "chsc@peytz.dk",
+            "name": "Christian Schmidt",
+            "role": "Lead"
+        },
+        {
+            "email": "mike@silverorange.com",
+            "name": "Mike Gauthier",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Services": "./"
+        }
+    },
+    "description": "More info available on: http://pear.php.net/package/Services_Amazon_S3",
+    "include-path": [
+        "./"
+    ],
+    "license": "BSD",
+    "name": "pear/services_amazon_s3",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Services_Amazon_S3",
+        "source": "https://github.com/pear/Services_Amazon_S3"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*",
+        "pear/pear": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
